@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ильдар Сакаев](https://up.htmlacademy.ru/javascript/11/user/502523).
-* Наставник: `Неизвестно`.
+* Наставник: [Филипп Шамсиев](https://up.htmlacademy.ru/javascript/11/user/70260).
 
 ---
 
