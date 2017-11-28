@@ -67,7 +67,7 @@ var getFeatures = function (features) {
 
 // фукнция получения типа жилья
 var getOfferType = function (type) {
-  var offerType ='';
+  var offerType = '';
   if (type === 'flat') {
     offerType = 'Квартира';
   } else if (type === 'house') {
@@ -77,10 +77,10 @@ var getOfferType = function (type) {
   } else {
     offerType = type;
   }
-  return offerType
+  return offerType;
 };
 
-//создаем массив
+// создаем массив
 for (var i = 0; i < 8; i++) {
   var locationX = getRandomValue(LOCATION.x.min, LOCATION.x.max);
   var locationY = getRandomValue(LOCATION.y.min, LOCATION.y.max);
@@ -109,7 +109,7 @@ for (var i = 0; i < 8; i++) {
   };
 }
 
-//удалим класс у блока .map
+// удалим класс у блока .map
 map.classList.remove('map--faded');
 
 // добавляем метки на карту используя DocumentFragment
