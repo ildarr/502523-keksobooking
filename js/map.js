@@ -123,23 +123,23 @@ for (i = 0; i < ads.length; i++) {
   mapPin.style.left = ads[i].location.x - WIDTH_IMAGE / 2 + 'px';
   mapPin.style.top = ads[i].location.y - HEIGHT_IMAGE + 'px';
   mapPin.dataset.mapPinId = i;
-  mapPin.setAttribute('tabindex','0');
+  mapPin.setAttribute('tabindex', '0');
   fragment.appendChild(mapPin);
 }
 
 // При перетаскивании метки с кексом, активируем карту и форму, добавляем метки на карту
-mapPinMain.addEventListener('mouseup', function() {
+mapPinMain.addEventListener('mouseup', function () {
   map.classList.remove('map--faded');
   mapPins.appendChild(fragment);
-  noticeForm.classList.remove('notice__form--disabled')
+  noticeForm.classList.remove('notice__form--disabled');
   var noticeFieldset = noticeForm.querySelectorAll('fieldset');
   for (i = 0; i < noticeFieldset.length; i++) {
     noticeFieldset[i].disabled = false;
-  };
+  }
 });
 
 // функция создания карточки DOM - элемента объявления с данными из текущего элемента массива
-var getMapCard = function (array, i) {
+var getMapCard = function (array, indexNumber) {
   var mapCard = document.querySelector('template').content.querySelector('.map__card').cloneNode(true);
   mapCard.querySelector('h3').textContent = array.offer.title;
   mapCard.querySelector('small').textContent = array.offer.address;
@@ -150,60 +150,60 @@ var getMapCard = function (array, i) {
   mapCard.querySelector('.popup__features').innerHTML = getFeatures(array.offer.features);
   mapCard.querySelector('.popup__features + p').textContent = array.offer.description;
   mapCard.querySelector('.popup__avatar').src = array.author.avatar;
-  mapCard.dataset.mapCardId = i;
-  mapCard.setAttribute('hidden','true');
+  mapCard.dataset.mapCardId = indexNumber;
+  mapCard.setAttribute('hidden', 'true');
   map.appendChild(mapCard);
 };
 
 // функция показа карточки объявления
-var openMapCard = function (i) {
-  var mapCurrentCard = document.querySelector('[data-map-card-id = "' + i + '"]');
+var openMapCard = function (indexNumber) {
+  var mapCurrentCard = document.querySelector('[data-map-card-id = "' + indexNumber + '"]');
   var popupClose = mapCurrentCard.querySelector('.popup__close');
-  var mapCurrentPin = document.querySelector('[data-map-pin-id = "' + i + '"]');
+  var mapCurrentPin = document.querySelector('[data-map-pin-id = "' + indexNumber + '"]');
   mapCurrentCard.removeAttribute('hidden');
   mapCurrentPin.classList.add('map__pin--active');
-  popupClose.setAttribute('tabindex','0');
+  popupClose.setAttribute('tabindex', '0');
   popupClose.addEventListener('click', function () {
-    closeMapCard (i);
+    closeMapCard(indexNumber);
   });
   popupClose.addEventListener('keydown', function (evt) {
     if (evt.keyCode === keyCodes.ENTER) {
-    closeMapCard (i);
-  }
+      closeMapCard(indexNumber);
+    }
   });
   document.addEventListener('keydown', function (evt) {
     if (evt.keyCode === keyCodes.ESC) {
-      closeMapCard (i);
-    };
+      closeMapCard(indexNumber);
+    }
   });
 };
 
 // функция скрытия карточки объявления
-var closeMapCard = function (i) {
-  var mapCurrentCard = document.querySelector('[data-map-card-id = "' + i + '"]');
-  var mapCurrentPin = document.querySelector('[data-map-pin-id = "' + i + '"]');
-  mapCurrentCard.setAttribute('hidden','true');
+var closeMapCard = function (indexNumber) {
+  var mapCurrentCard = document.querySelector('[data-map-card-id = "' + indexNumber + '"]');
+  var mapCurrentPin = document.querySelector('[data-map-pin-id = "' + indexNumber + '"]');
+  mapCurrentCard.setAttribute('hidden', 'true');
   mapCurrentCard.querySelector('.popup__close').removeAttribute('tabindex');
   mapCurrentPin.classList.remove('map__pin--active');
 };
 
 // создаем карточки объявлений
 for (i = 0; i < ads.length; i++) {
-  getMapCard (ads[i], i);
-};
+  getMapCard(ads[i], i);
+}
 
 // при нажатии метки (кроме кекса) показываем объявление
 mapPins.addEventListener('click', function (evt) {
   var targetElement = evt.target;
   while (targetElement !== mapPins) {
-    if ((targetElement.tagName == 'BUTTON') && (targetElement !== mapPinMain)) {
+    if ((targetElement.tagName === 'BUTTON') && (targetElement !== mapPinMain)) {
       if (targetPrevious !== null) {
-        closeMapCard (targetPrevious.dataset.mapPinId);
-      };
-      openMapCard (targetElement.dataset.mapPinId);
+        closeMapCard(targetPrevious.dataset.mapPinId);
+      }
+      openMapCard(targetElement.dataset.mapPinId);
       targetPrevious = targetElement;
       return;
-    };
+    }
     targetElement = targetElement.parentNode;
-  };
+  }
 });
