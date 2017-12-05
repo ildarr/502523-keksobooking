@@ -19,13 +19,20 @@ var LOCATION = {
     max: 500
   }
 };
+var keyCodes = {
+  ESC: 27,
+  ENTER: 13
+};
 var WIDTH_IMAGE = 46;
 var HEIGHT_IMAGE = 62;
 var ads = [];
 var offerTitles = OFFER_TITLES.slice(0, OFFER_TITLES.length);
 var map = document.querySelector('.map');
+var mapPinMain = document.querySelector('.map__pin--main');
 var mapPins = document.querySelector('.map__pins');
+var noticeForm = document.querySelector('.notice__form');
 var fragment = document.createDocumentFragment();
+var targetPrevious = null; // переменная для предыдущего целевого элемента метки объявления
 
 // функция поиска случайного числа из диапазона
 var getRandomValue = function (min, max) {
@@ -109,28 +116,94 @@ for (var i = 0; i < 8; i++) {
   };
 }
 
-// удалим класс у блока .map
-map.classList.remove('map--faded');
-
 // добавляем метки на карту используя DocumentFragment
 for (i = 0; i < ads.length; i++) {
   var mapPin = document.querySelector('template').content.querySelector('.map__pin').cloneNode(true);
   mapPin.querySelector('img').src = ads[i].author.avatar;
   mapPin.style.left = ads[i].location.x - WIDTH_IMAGE / 2 + 'px';
   mapPin.style.top = ads[i].location.y - HEIGHT_IMAGE + 'px';
+  mapPin.dataset.mapPinId = i;
+  mapPin.setAttribute('tabindex','0');
   fragment.appendChild(mapPin);
 }
-mapPins.appendChild(fragment);
 
-// карточка DOM - элемента объявления с данными из первого элемента массива
-var mapCard = document.querySelector('template').content.querySelector('.map__card').cloneNode(true);
-mapCard.querySelector('h3').textContent = ads[0].offer.title;
-mapCard.querySelector('small').textContent = ads[0].offer.address;
-mapCard.querySelector('.popup__price').innerHTML = ads[0].offer.price + '&#x20bd;/ночь';
-mapCard.querySelector('h4').textContent = getOfferType(ads[0].offer.type);
-mapCard.querySelector('h4 + p').textContent = ads[0].offer.rooms + ' для ' + ads[0].offer.guests + '  гостей';
-mapCard.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + ads[0].offer.checkin + ', выезд до ' + ads[0].offer.checkout;
-mapCard.querySelector('.popup__features').innerHTML = getFeatures(ads[0].offer.features);
-mapCard.querySelector('.popup__features + p').textContent = ads[0].offer.description;
-mapCard.querySelector('.popup__avatar').src = ads[0].author.avatar;
-map.appendChild(mapCard);
+// При перетаскивании метки с кексом, активируем карту и форму, добавляем метки на карту
+mapPinMain.addEventListener('mouseup', function() {
+  map.classList.remove('map--faded');
+  mapPins.appendChild(fragment);
+  noticeForm.classList.remove('notice__form--disabled')
+  var noticeFieldset = noticeForm.querySelectorAll('fieldset');
+  for (i = 0; i < noticeFieldset.length; i++) {
+    noticeFieldset[i].disabled = false;
+  };
+});
+
+// функция создания карточки DOM - элемента объявления с данными из текущего элемента массива
+var getMapCard = function (array, i) {
+  var mapCard = document.querySelector('template').content.querySelector('.map__card').cloneNode(true);
+  mapCard.querySelector('h3').textContent = array.offer.title;
+  mapCard.querySelector('small').textContent = array.offer.address;
+  mapCard.querySelector('.popup__price').innerHTML = array.offer.price + '&#x20bd;/ночь';
+  mapCard.querySelector('h4').textContent = getOfferType(array.offer.type);
+  mapCard.querySelector('h4 + p').textContent = array.offer.rooms + ' для ' + array.offer.guests + '  гостей';
+  mapCard.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + array.offer.checkin + ', выезд до ' + array.offer.checkout;
+  mapCard.querySelector('.popup__features').innerHTML = getFeatures(array.offer.features);
+  mapCard.querySelector('.popup__features + p').textContent = array.offer.description;
+  mapCard.querySelector('.popup__avatar').src = array.author.avatar;
+  mapCard.dataset.mapCardId = i;
+  mapCard.setAttribute('hidden','true');
+  map.appendChild(mapCard);
+};
+
+// функция показа карточки объявления
+var openMapCard = function (i) {
+  var mapCurrentCard = document.querySelector('[data-map-card-id = "' + i + '"]');
+  var popupClose = mapCurrentCard.querySelector('.popup__close');
+  var mapCurrentPin = document.querySelector('[data-map-pin-id = "' + i + '"]');
+  mapCurrentCard.removeAttribute('hidden');
+  mapCurrentPin.classList.add('map__pin--active');
+  popupClose.setAttribute('tabindex','0');
+  popupClose.addEventListener('click', function () {
+    closeMapCard (i);
+  });
+  popupClose.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === keyCodes.ENTER) {
+    closeMapCard (i);
+  }
+  });
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === keyCodes.ESC) {
+      closeMapCard (i);
+    };
+  });
+};
+
+// функция скрытия карточки объявления
+var closeMapCard = function (i) {
+  var mapCurrentCard = document.querySelector('[data-map-card-id = "' + i + '"]');
+  var mapCurrentPin = document.querySelector('[data-map-pin-id = "' + i + '"]');
+  mapCurrentCard.setAttribute('hidden','true');
+  mapCurrentCard.querySelector('.popup__close').removeAttribute('tabindex');
+  mapCurrentPin.classList.remove('map__pin--active');
+};
+
+// создаем карточки объявлений
+for (i = 0; i < ads.length; i++) {
+  getMapCard (ads[i], i);
+};
+
+// при нажатии метки (кроме кекса) показываем объявление
+mapPins.addEventListener('click', function (evt) {
+  var targetElement = evt.target;
+  while (targetElement !== mapPins) {
+    if ((targetElement.tagName == 'BUTTON') && (targetElement !== mapPinMain)) {
+      if (targetPrevious !== null) {
+        closeMapCard (targetPrevious.dataset.mapPinId);
+      };
+      openMapCard (targetElement.dataset.mapPinId);
+      targetPrevious = targetElement;
+      return;
+    };
+    targetElement = targetElement.parentNode;
+  };
+});
