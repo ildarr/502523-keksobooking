@@ -87,6 +87,12 @@ var getOfferType = function (type) {
   return offerType;
 };
 
+// Деактивируем поля ввода форм
+var noticeFieldset = noticeForm.querySelectorAll('fieldset');
+for (i = 0; i < noticeFieldset.length; i++) {
+  noticeFieldset[i].setAttribute('disabled', 'true');
+}
+
 // создаем массив
 for (var i = 0; i < 8; i++) {
   var locationX = getRandomValue(LOCATION.x.min, LOCATION.x.max);
@@ -132,7 +138,6 @@ mapPinMain.addEventListener('mouseup', function () {
   map.classList.remove('map--faded');
   mapPins.appendChild(fragment);
   noticeForm.classList.remove('notice__form--disabled');
-  var noticeFieldset = noticeForm.querySelectorAll('fieldset');
   for (i = 0; i < noticeFieldset.length; i++) {
     noticeFieldset[i].disabled = false;
   }
@@ -165,11 +170,6 @@ var openMapCard = function (indexNumber) {
   popupClose.setAttribute('tabindex', '0');
   popupClose.addEventListener('click', function () {
     closeMapCard(indexNumber);
-  });
-  popupClose.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === keyCodes.ENTER) {
-      closeMapCard(indexNumber);
-    }
   });
   document.addEventListener('keydown', function (evt) {
     if (evt.keyCode === keyCodes.ESC) {
