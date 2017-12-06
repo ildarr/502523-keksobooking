@@ -268,7 +268,7 @@ noticeRoomNumber.addEventListener('change', function (evt) {
     if (targetElement.value === String(i)) {
       for (var j = CapacityLength - 2; j >= (CapacityLength - 1) - i; j--) {
         noticeCapacity.options[j].removeAttribute('hidden');
-        noticeCapacity.value = targetElement.value
+        noticeCapacity.value = targetElement.value;
       }
     }
   }
