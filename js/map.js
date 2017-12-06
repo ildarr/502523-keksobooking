@@ -216,7 +216,7 @@ var noticeType = document.getElementById('type');
 var noticePrice = document.getElementById('price');
 var noticeRoomNumber = document.getElementById('room_number');
 var noticeCapacity = document.getElementById('capacity');
-var CapacityLength = noticeCapacity.options.length;
+var capacityLength = noticeCapacity.options.length;
 
 // дополнително для Edge обработка minlenght
 noticeTitle.addEventListener('input', function (evt) {
@@ -258,15 +258,15 @@ noticeType.addEventListener('change', function (evt) {
 noticeRoomNumber.addEventListener('change', function (evt) {
   var targetElement = evt.target;
   // предварительно скрываем опции вместимости гостей
-  for (i = 0; i < CapacityLength; i++) {
+  for (i = 0; i < capacityLength; i++) {
     if (!noticeCapacity.options[i].hasAttribute('hidden')) {
       noticeCapacity.options[i].setAttribute('hidden', 'true');
     }
   }
   // активируем опции вместимости гостей в зависимости от количества комнат, кроме =100
-  for (i = 1; i < CapacityLength; i++) {
+  for (i = 1; i < capacityLength; i++) {
     if (targetElement.value === String(i)) {
-      for (var j = CapacityLength - 2; j >= (CapacityLength - 1) - i; j--) {
+      for (var j = capacityLength - 2; j >= (capacityLength - 1) - i; j--) {
         noticeCapacity.options[j].removeAttribute('hidden');
         noticeCapacity.value = targetElement.value;
       }
