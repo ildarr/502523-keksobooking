@@ -278,6 +278,22 @@ noticeRoomNumber.addEventListener('change', function (evt) {
     noticeCapacity.value = '0';
   }
 });
+
+// функция инициализации события change
+var changeEvent = function (objectOfEvent) {
+  var event = new Event('change');
+  noticeRoomNumber.dispatchEvent(event);
+}
 // инициализируем событие синхронизации гостей и комнат изначально
-var event = new Event('change');
-noticeRoomNumber.dispatchEvent(event);
+changeEvent(noticeRoomNumber);
+
+// выделение красным цветом невалидных input при отправке
+var formSubmit = document.querySelector('.form__submit');
+formSubmit.addEventListener('click', function () {
+  var checkInput = noticeForm.querySelectorAll('input');
+  for (i = 0; i < checkInput.length; i++) {
+    if (!checkInput[i].checkValidity()) {
+      checkInput[i].style.borderColor = 'red';
+    }
+  };
+});
