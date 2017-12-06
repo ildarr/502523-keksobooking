@@ -282,8 +282,8 @@ noticeRoomNumber.addEventListener('change', function (evt) {
 // функция инициализации события change
 var changeEvent = function (objectOfEvent) {
   var event = new Event('change');
-  noticeRoomNumber.dispatchEvent(event);
-}
+  objectOfEvent.dispatchEvent(event);
+};
 // инициализируем событие синхронизации гостей и комнат изначально
 changeEvent(noticeRoomNumber);
 
@@ -295,5 +295,5 @@ formSubmit.addEventListener('click', function () {
     if (!checkInput[i].checkValidity()) {
       checkInput[i].style.borderColor = 'red';
     }
-  };
+  }
 });
