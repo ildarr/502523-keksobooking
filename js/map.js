@@ -274,7 +274,7 @@ noticeRoomNumber.addEventListener('change', function (evt) {
   }
   // активируем опцию вместимости гостей при количестве комнат =100
   if (targetElement.value === '100') {
-    noticeCapacity.options[3].removeAttribute('hidden');
+    noticeCapacity.options[capacityLength - 1].removeAttribute('hidden');
     noticeCapacity.value = '0';
   }
 });
