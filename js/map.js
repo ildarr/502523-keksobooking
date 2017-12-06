@@ -207,3 +207,77 @@ mapPins.addEventListener('click', function (evt) {
     targetElement = targetElement.parentNode;
   }
 });
+
+// Валидация полей формы
+var noticeTitle = document.getElementById('title');
+var noticeTimein = document.getElementById('timein');
+var noticeTimeout = document.getElementById('timeout');
+var noticeType = document.getElementById('type');
+var noticePrice = document.getElementById('price');
+var noticeRoomNumber = document.getElementById('room_number');
+var noticeCapacity = document.getElementById('capacity');
+var CapacityLength = noticeCapacity.options.length;
+
+// дополнително для Edge обработка minlenght
+noticeTitle.addEventListener('input', function (evt) {
+  var targetElement = evt.target;
+  if (targetElement.value.length < 30) {
+    targetElement.setCustomValidity('Заголовок объявления не должен быть менее 30 символов');
+  } else if (targetElement.value.length > 100) {
+    targetElement.setCustomValidity('Заголовок объявления должен быть не более 100 символов');
+  } else {
+    targetElement.setCustomValidity('');
+  }
+});
+
+// синхронизация времени заезда-выезда
+noticeTimein.addEventListener('change', function (evt) {
+  var targetElement = evt.target;
+  noticeTimeout.value = targetElement.value;
+});
+noticeTimeout.addEventListener('change', function (evt) {
+  var targetElement = evt.target;
+  noticeTimein.value = targetElement.value;
+});
+
+// синхронизация типа жилья и минимальной цены
+noticeType.addEventListener('change', function (evt) {
+  var targetElement = evt.target;
+  if (targetElement.value === 'flat') {
+    noticePrice.min = 1000;
+  } else if (targetElement.value === 'house') {
+    noticePrice.min = 5000;
+  } else if (targetElement.value === 'palace') {
+    noticePrice.min = 10000;
+  } else {
+    noticePrice.min = 0;
+  }
+});
+
+// событие синхронизации гостей и комнат
+noticeRoomNumber.addEventListener('change', function (evt) {
+  var targetElement = evt.target;
+  // предварительно скрываем опции вместимости гостей
+  for (i = 0; i < CapacityLength; i++) {
+    if (!noticeCapacity.options[i].hasAttribute('hidden')) {
+      noticeCapacity.options[i].setAttribute('hidden', 'true');
+    }
+  }
+  // активируем опции вместимости гостей в зависимости от количества комнат, кроме =100
+  for (i = 1; i < CapacityLength; i++) {
+    if (targetElement.value === String(i)) {
+      for (var j = CapacityLength - 2; j >= (CapacityLength - 1) - i; j--) {
+        noticeCapacity.options[j].removeAttribute('hidden');
+        noticeCapacity.value = targetElement.value
+      }
+    }
+  }
+  // активируем опцию вместимости гостей при количестве комнат =100
+  if (targetElement.value === '100') {
+    noticeCapacity.options[3].removeAttribute('hidden');
+    noticeCapacity.value = '0';
+  }
+});
+// инициализируем событие синхронизации гостей и комнат изначально
+var event = new Event('change');
+noticeRoomNumber.dispatchEvent(event);
