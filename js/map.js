@@ -299,7 +299,7 @@ noticeType.addEventListener('change', function (evt) {
 // синхронизация количества гостей и комнат
 noticeRoomNumber.addEventListener('change', function (evt) {
   var targetElement = evt.target;
-  // активируем опцию числа гостей при количестве комнат =100
+// активируем опцию числа гостей при количестве комнат =100
   if (targetElement.value === '100') {
     for (i = 0; i < noticeCapacity.options.length; i++) {
       if (noticeCapacity.options[i].value === '0') {
@@ -309,8 +309,7 @@ noticeRoomNumber.addEventListener('change', function (evt) {
       }
     }
     noticeCapacity.value = '0';
-// активируем опции числа гостей при количестве комнат, кроме 100
-  } else {
+  } else {// активируем опции числа гостей при количестве комнат, кроме 100
     for (i = 0; i < noticeCapacity.options.length; i++) {
       noticeCapacity.options[i].setAttribute('hidden', 'true');
       for (var j = 1; j <= targetElement.value; j++) {
