@@ -209,36 +209,73 @@ mapPins.addEventListener('click', function (evt) {
 });
 
 // Валидация полей формы
-var noticeTitle = document.getElementById('title');
-var noticeTimein = document.getElementById('timein');
-var noticeTimeout = document.getElementById('timeout');
-var noticeType = document.getElementById('type');
-var noticePrice = document.getElementById('price');
-var noticeRoomNumber = document.getElementById('room_number');
-var noticeCapacity = document.getElementById('capacity');
-var capacityLength = noticeCapacity.options.length;
+var noticeTimein = noticeForm.querySelector('[id = "timein"]');
+var noticeTimeout = noticeForm.querySelector('[id = "timeout"]');
+var noticeType = noticeForm.querySelector('[id = "type"]');
+var noticeRoomNumber = noticeForm.querySelector('[id = "room_number"]');
+var noticeCapacity = noticeForm.querySelector('[id = "capacity"]');
+var checkInput = noticeForm.querySelectorAll('input');
 
-// дополнително для Edge обработка minlenght
-noticeTitle.addEventListener('input', function (evt) {
-  var targetElement = evt.target;
-  if (targetElement.value.length < 30) {
-    targetElement.setCustomValidity('Заголовок объявления не должен быть менее 30 символов');
-  } else if (targetElement.value.length > 100) {
-    targetElement.setCustomValidity('Заголовок объявления должен быть не более 100 символов');
-  } else {
-    targetElement.setCustomValidity('');
-  }
-});
+for (i = 0; i < checkInput.length; i++) {
+  checkInput[i].addEventListener('blur', function (evt) {
+    evt.target.checkValidity();
+  });
+  checkInput[i].addEventListener('focus', function (evt) {
+    evt.target.style.borderWidth = '';
+    evt.target.style.borderColor = ''
+  });
+  checkInput[i].addEventListener('invalid', function (evt) {
+    evt.target.style.borderWidth = '2px';
+    evt.target.style.borderColor = 'red';
+    var targetRangeValue = null;
+    if (evt.target.validity.tooShort) {
+      targetRangeValue = evt.target.getAttribute('minlength');
+      evt.target.setCustomValidity('Количество символов поля должно быть не меньше ' + String(targetRangeValue));
+    } else if (evt.target.validity.tooLong) {
+      targetRangeValue = evt.target.getAttribute('maxlength');
+      evt.target.setCustomValidity('Количество символов поля должно быть не больше ' + String(targetRangeValue));
+    } else if (evt.target.validity.rangeUnderflow) {
+      targetRangeValue = evt.target.getAttribute('min');
+      evt.target.setCustomValidity('Значение поля должно быть не меньше ' + String(targetRangeValue));
+    } else if (evt.target.validity.rangeOverflow) {
+      targetRangeValue = evt.target.getAttribute('max');
+      evt.target.setCustomValidity('Значение поля должно быть не больше ' + String(targetRangeValue));
+    } else if (evt.target.validity.valueMissing) {
+      evt.target.setCustomValidity('Обязательное поле');
+    } else {
+      evt.target.setCustomValidity('');
+      evt.target.style.borderWidth = '';
+      evt.target.style.borderColor = '';
+    }
+  });
+  // дополнительно для Edge обработка minlength
+  checkInput[i].addEventListener('input', function (evt) {
+    if (evt.target.hasAttribute('minlength')) {
+      var targetRangeValue = evt.target.getAttribute('minlength');
+      if (evt.target.value.length < targetRangeValue) {
+        evt.target.style.borderWidth = '2px';
+        evt.target.style.borderColor = 'red';
+        evt.target.setCustomValidity('Количество символов поля должно быть не меньше ' + String(targetRangeValue));
+      } else {
+        evt.target.setCustomValidity('');
+        evt.target.style.borderWidth = '';
+        evt.target.style.borderColor = '';
+      }
+    }
+  });
+}
 
-// синхронизация времени заезда-выезда
-noticeTimein.addEventListener('change', function (evt) {
-  var targetElement = evt.target;
-  noticeTimeout.value = targetElement.value;
-});
-noticeTimeout.addEventListener('change', function (evt) {
-  var targetElement = evt.target;
-  noticeTimein.value = targetElement.value;
-});
+// функция синхронизации 2-х полей формы при их изменении
+var formFieldSync = function (formFirstField, formSecondField) {
+  formFirstField.addEventListener('change', function (evt) {
+    var targetElement = evt.target;
+    formSecondField.value = targetElement.value;
+  });
+}
+
+// вызов функции синхронизации полей времени заезда-выезда
+formFieldSync (noticeTimeout, noticeTimein);
+formFieldSync (noticeTimein, noticeTimeout);
 
 // синхронизация типа жилья и минимальной цены
 noticeType.addEventListener('change', function (evt) {
@@ -254,28 +291,29 @@ noticeType.addEventListener('change', function (evt) {
   }
 });
 
-// событие синхронизации гостей и комнат
+// синхронизация количества гостей и комнат
 noticeRoomNumber.addEventListener('change', function (evt) {
   var targetElement = evt.target;
-  // предварительно скрываем опции вместимости гостей
-  for (i = 0; i < capacityLength; i++) {
-    if (!noticeCapacity.options[i].hasAttribute('hidden')) {
-      noticeCapacity.options[i].setAttribute('hidden', 'true');
-    }
-  }
-  // активируем опции вместимости гостей в зависимости от количества комнат, кроме =100
-  for (i = 1; i < capacityLength; i++) {
-    if (targetElement.value === String(i)) {
-      for (var j = capacityLength - 2; j >= (capacityLength - 1) - i; j--) {
-        noticeCapacity.options[j].removeAttribute('hidden');
-        noticeCapacity.value = targetElement.value;
+  // активируем опцию числа гостей при количестве комнат =100
+  if (targetElement.value === '100') {
+    for (i = 0; i < noticeCapacity.options.length; i++) {
+      if (noticeCapacity.options[i].value === '0') {
+        noticeCapacity.options[i].setAttribute('hidden', 'false')
+      } else {
+        noticeCapacity.options[i].setAttribute('hidden', 'true')
       }
     }
-  }
-  // активируем опцию вместимости гостей при количестве комнат =100
-  if (targetElement.value === '100') {
-    noticeCapacity.options[capacityLength - 1].removeAttribute('hidden');
     noticeCapacity.value = '0';
+  } else {  // активируем опции числа гостей при количестве комнат, кроме 100
+    for (i = 0; i < noticeCapacity.options.length; i++) {
+      noticeCapacity.options[i].setAttribute('hidden', 'true');
+      for (var j = 1; j <= targetElement.value; j++) {
+        if (noticeCapacity.options[i].value === String(j)) {
+          noticeCapacity.options[i].removeAttribute('hidden')
+        }
+      }
+    }
+    noticeCapacity.value = targetElement.value;
   }
 });
 
@@ -286,14 +324,3 @@ var changeEvent = function (objectOfEvent) {
 };
 // инициализируем событие синхронизации гостей и комнат изначально
 changeEvent(noticeRoomNumber);
-
-// выделение красным цветом невалидных input при отправке
-var formSubmit = document.querySelector('.form__submit');
-formSubmit.addEventListener('click', function () {
-  var checkInput = noticeForm.querySelectorAll('input');
-  for (i = 0; i < checkInput.length; i++) {
-    if (!checkInput[i].checkValidity()) {
-      checkInput[i].style.borderColor = 'red';
-    }
-  }
-});
