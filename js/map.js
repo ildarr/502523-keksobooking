@@ -323,7 +323,7 @@ noticeRoomNumber.addEventListener('change', function (evt) {
   }
 });
 
-// функция инициализации события change
+// функция инициализации события Change
 var changeEvent = function (objectOfEvent) {
   var event = new Event('change');
   objectOfEvent.dispatchEvent(event);
