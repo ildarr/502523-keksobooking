@@ -212,6 +212,7 @@ mapPins.addEventListener('click', function (evt) {
 var noticeTimein = noticeForm.querySelector('[id = "timein"]');
 var noticeTimeout = noticeForm.querySelector('[id = "timeout"]');
 var noticeType = noticeForm.querySelector('[id = "type"]');
+var noticePrice = noticeForm.querySelector('[id = "price"]');
 var noticeRoomNumber = noticeForm.querySelector('[id = "room_number"]');
 var noticeCapacity = noticeForm.querySelector('[id = "capacity"]');
 var checkInput = noticeForm.querySelectorAll('input');
@@ -222,7 +223,7 @@ for (i = 0; i < checkInput.length; i++) {
   });
   checkInput[i].addEventListener('focus', function (evt) {
     evt.target.style.borderWidth = '';
-    evt.target.style.borderColor = ''
+    evt.target.style.borderColor = '';
   });
   checkInput[i].addEventListener('invalid', function (evt) {
     evt.target.style.borderWidth = '2px';
@@ -271,23 +272,27 @@ var formFieldSync = function (formFirstField, formSecondField) {
     var targetElement = evt.target;
     formSecondField.value = targetElement.value;
   });
-}
+};
 
 // вызов функции синхронизации полей времени заезда-выезда
-formFieldSync (noticeTimeout, noticeTimein);
-formFieldSync (noticeTimein, noticeTimeout);
+formFieldSync(noticeTimeout, noticeTimein);
+formFieldSync(noticeTimein, noticeTimeout);
 
 // синхронизация типа жилья и минимальной цены
 noticeType.addEventListener('change', function (evt) {
   var targetElement = evt.target;
   if (targetElement.value === 'flat') {
     noticePrice.min = 1000;
+    noticePrice.value = 1000;
   } else if (targetElement.value === 'house') {
     noticePrice.min = 5000;
+    noticePrice.value = 5000;
   } else if (targetElement.value === 'palace') {
     noticePrice.min = 10000;
+    noticePrice.value = 10000;
   } else {
     noticePrice.min = 0;
+    noticePrice.value = 0;
   }
 });
 
@@ -298,18 +303,19 @@ noticeRoomNumber.addEventListener('change', function (evt) {
   if (targetElement.value === '100') {
     for (i = 0; i < noticeCapacity.options.length; i++) {
       if (noticeCapacity.options[i].value === '0') {
-        noticeCapacity.options[i].setAttribute('hidden', 'false')
+        noticeCapacity.options[i].setAttribute('hidden', 'false');
       } else {
-        noticeCapacity.options[i].setAttribute('hidden', 'true')
+        noticeCapacity.options[i].setAttribute('hidden', 'true');
       }
     }
     noticeCapacity.value = '0';
-  } else {  // активируем опции числа гостей при количестве комнат, кроме 100
+// активируем опции числа гостей при количестве комнат, кроме 100
+  } else {
     for (i = 0; i < noticeCapacity.options.length; i++) {
       noticeCapacity.options[i].setAttribute('hidden', 'true');
       for (var j = 1; j <= targetElement.value; j++) {
         if (noticeCapacity.options[i].value === String(j)) {
-          noticeCapacity.options[i].removeAttribute('hidden')
+          noticeCapacity.options[i].removeAttribute('hidden');
         }
       }
     }
