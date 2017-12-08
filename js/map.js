@@ -225,6 +225,16 @@ var OFFER_PRICE = {
 };
 var MIN_LENGTH = 30;
 var MAX_LENGTH = 100;
+// функция инициализации события Change
+var changeEvent = function (objectOfEvent) {
+  var event = new Event('change');
+  objectOfEvent.dispatchEvent(event);
+};
+// функция инициализации события input
+var inputEvent = function (objectOfEvent) {
+  var event = new Event('input');
+  objectOfEvent.dispatchEvent(event);
+};
 
 // валидация всех полей input в форме, при неверном заполнении выделяются красным
 for (i = 0; i < checkInput.length; i++) {
@@ -341,22 +351,10 @@ noticeRoomNumber.addEventListener('change', function (evt) {
   }
 });
 
-// функция инициализации события Change
-var changeEvent = function (objectOfEvent) {
-  var event = new Event('change');
-  objectOfEvent.dispatchEvent(event);
-};
 // инициализируем событие синхронизации гостей и комнат изначально
 changeEvent(noticeRoomNumber);
 // инициализируем событие синхронизации типа жилья и цены
 changeEvent(noticeType);
-
-
-// функция инициализации события input
-var inputEvent = function (objectOfEvent) {
-  var event = new Event('input');
-  objectOfEvent.dispatchEvent(event);
-};
 
 var formSubmit = noticeForm.querySelector('.form__submit');
 formSubmit.addEventListener('click', function () {
@@ -367,7 +365,7 @@ formSubmit.addEventListener('click', function () {
 
 var formReset = noticeForm.querySelector('.form__reset');
 formReset.addEventListener('click', function () {
-  // при отправке формы инициализируем проверку input для Заголовка и Прайса
+  // при очистке формы сбрасываем состояния красных полей
   for (i = 0; i < checkInput.length; i++) {
     checkInput[i].style.borderWidth = '';
     checkInput[i].style.borderColor = '';
