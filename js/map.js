@@ -218,14 +218,13 @@ var noticeRoomNumber = noticeForm.querySelector('[id = "room_number"]');
 var noticeCapacity = noticeForm.querySelector('[id = "capacity"]');
 var checkInput = noticeForm.querySelectorAll('input');
 var OFFER_PRICE = {
-    flat: 1000,
-    bungalo: 0,
-    house: 5000,
-    palace: 10000
-  };
+  flat: 1000,
+  bungalo: 0,
+  house: 5000,
+  palace: 10000
+};
 var MIN_LENGTH = 30;
 var MAX_LENGTH = 100;
-var MAX_PRICE = 1000000;
 
 // валидация всех полей input в форме, при неверном заполнении выделяются красным
 for (i = 0; i < checkInput.length; i++) {
@@ -281,19 +280,19 @@ noticeTitle.addEventListener('input', function (evt) {
 
 // дополнительная валидация min и max Цены за ночь внутри скрипта
 noticePrice.addEventListener('input', function (evt) {
-    if (evt.target.value < OFFER_PRICE[noticeType.value]) {
-      evt.target.style.borderWidth = '2px';
-      evt.target.style.borderColor = 'red';
-      evt.target.setCustomValidity('Значение поля должно быть не меньше ' + String(OFFER_PRICE[noticeType.value]));
-    } else if (evt.target.value > MAX_PRICE) {
-      evt.target.style.borderWidth = '2px';
-      evt.target.style.borderColor = 'red';
-      evt.target.setCustomValidity('Значение поля должно быть не больше ' + String(MAX_PRICE));
-    } else {
-      evt.target.setCustomValidity('');
-      evt.target.style.borderWidth = '';
-      evt.target.style.borderColor = '';
-    }
+  if (evt.target.value < OFFER_PRICE[noticeType.value]) {
+    evt.target.style.borderWidth = '2px';
+    evt.target.style.borderColor = 'red';
+    evt.target.setCustomValidity('Значение поля должно быть не меньше ' + String(OFFER_PRICE[noticeType.value]));
+  } else if (evt.target.value > MAX_PRICE) {
+    evt.target.style.borderWidth = '2px';
+    evt.target.style.borderColor = 'red';
+    evt.target.setCustomValidity('Значение поля должно быть не больше ' + String(MAX_PRICE));
+  } else {
+    evt.target.setCustomValidity('');
+    evt.target.style.borderWidth = '';
+    evt.target.style.borderColor = '';
+  }
 });
 
 // функция синхронизации 2-х полей формы при их изменении
@@ -312,7 +311,7 @@ formFieldSync(noticeTimein, noticeTimeout);
 noticeType.addEventListener('change', function (evt) {
   noticePrice.min = OFFER_PRICE[evt.target.value];
   noticePrice.value = OFFER_PRICE[evt.target.value];
-  //инициализируем проверку input для Прайса
+  // инициализируем проверку input для Прайса
   inputEvent(noticePrice);
 });
 
@@ -360,14 +359,14 @@ var inputEvent = function (objectOfEvent) {
 };
 
 var formSubmit = noticeForm.querySelector('.form__submit');
-formSubmit.addEventListener('click', function() {
+formSubmit.addEventListener('click', function () {
   // при отправке формы инициализируем проверку input для Заголовка и Прайса
   inputEvent(noticeTitle);
   inputEvent(noticePrice);
 });
 
 var formReset = noticeForm.querySelector('.form__reset');
-formReset.addEventListener('click', function() {
+formReset.addEventListener('click', function () {
   // при отправке формы инициализируем проверку input для Заголовка и Прайса
   for (i = 0; i < checkInput.length; i++) {
     checkInput[i].style.borderWidth = '';
