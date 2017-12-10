@@ -210,6 +210,7 @@ mapPins.addEventListener('click', function (evt) {
 
 // Валидация полей формы
 var noticeTitle = noticeForm.querySelector('[id = "title"]');
+var noticeAddress = noticeForm.querySelector('[id = "address"]');
 var noticeTimein = noticeForm.querySelector('[id = "timein"]');
 var noticeTimeout = noticeForm.querySelector('[id = "timeout"]');
 var noticeType = noticeForm.querySelector('[id = "type"]');
@@ -217,17 +218,27 @@ var noticePrice = noticeForm.querySelector('[id = "price"]');
 var noticeRoomNumber = noticeForm.querySelector('[id = "room_number"]');
 var noticeCapacity = noticeForm.querySelector('[id = "capacity"]');
 var checkInput = noticeForm.querySelectorAll('input');
+var resetColorFlag = false;
+var ADDRESS = '620, 450';
 var OFFER_PRICE = {
   flat: 1000,
   bungalo: 0,
   house: 5000,
   palace: 10000
 };
+
 var MIN_LENGTH = 30;
 var MAX_LENGTH = 100;
+var CHECK_FIELDS = ['title', 'address', 'price'];
+
+// функция проверки на числовое значение
+function isNumeric(num) {
+  return !isNaN(parseFloat(num)) && isFinite(num);
+}
+
 // функция инициализации события Change
-var changeEvent = function (objectOfEvent) {
-  var event = new Event('change');
+var callEvent = function (objectOfEvent, eventType) {
+  var event = new Event(eventType);
   objectOfEvent.dispatchEvent(event);
 };
 // функция инициализации события input
@@ -236,74 +247,91 @@ var inputEvent = function (objectOfEvent) {
   objectOfEvent.dispatchEvent(event);
 };
 
-// валидация всех полей input в форме, при неверном заполнении выделяются красным
-for (i = 0; i < checkInput.length; i++) {
-  checkInput[i].addEventListener('blur', function (evt) {
-    evt.target.checkValidity();
-  });
-  checkInput[i].addEventListener('focus', function (evt) {
-    evt.target.style.borderWidth = '';
-    evt.target.style.borderColor = '';
-  });
-  checkInput[i].addEventListener('invalid', function (evt) {
-    evt.target.style.borderWidth = '2px';
-    evt.target.style.borderColor = 'red';
-    var targetRangeValue = null;
-    if (evt.target.validity.tooShort) {
-      targetRangeValue = evt.target.getAttribute('minlength');
-      evt.target.setCustomValidity('Количество символов поля должно быть не меньше ' + String(targetRangeValue));
-    } else if (evt.target.validity.tooLong) {
-      targetRangeValue = evt.target.getAttribute('maxlength');
-      evt.target.setCustomValidity('Количество символов поля должно быть не больше ' + String(targetRangeValue));
-    } else if (evt.target.validity.rangeUnderflow) {
-      targetRangeValue = evt.target.getAttribute('min');
-      evt.target.setCustomValidity('Значение поля должно быть не меньше ' + String(targetRangeValue));
-    } else if (evt.target.validity.rangeOverflow) {
-      targetRangeValue = evt.target.getAttribute('max');
-      evt.target.setCustomValidity('Значение поля должно быть не больше ' + String(targetRangeValue));
-    } else if (evt.target.validity.valueMissing) {
-      evt.target.setCustomValidity('Обязательное поле');
-    } else {
-      evt.target.setCustomValidity('');
-      evt.target.style.borderWidth = '';
-      evt.target.style.borderColor = '';
+// Функция сброса красного цвета рамки. Рамка становится зеленый при resetColorFlag == false
+var resetBorderColor = function (evt) {
+  if (evt.type === 'input' && resetColorFlag == false) {
+    setBorderColor(evt.target, 'green');
+  } else {
+    setBorderColor(evt.target, '');
+    resetColorFlag = false;
+  }
+};
+
+var setBorderColor = function (fieldObject, fieldColor) {
+  fieldObject.style.borderColor = fieldColor;
+  if (fieldColor === '') {
+    fieldObject.style.borderWidth = '';
+  } else {
+    fieldObject.style.borderWidth = '2px';
+  }
+};
+
+// функция валидации поля title
+var noticeTitleEventHandler = function (evt) {
+  var targetValue = String(evt.target.value);
+  var targetValueTrim = targetValue.trim();
+  setBorderColor(evt.target, 'red');
+  if (targetValueTrim.length == 0) {
+    evt.target.setCustomValidity('Обязательное поле');
+  } else if (targetValueTrim.length < MIN_LENGTH) {
+    evt.target.setCustomValidity('Количество символов поля должно быть не меньше ' + MIN_LENGTH);
+  } else if (targetValueTrim.length > MAX_LENGTH) {
+    evt.target.setCustomValidity('Количество символов поля должно быть не больше ' + MAX_LENGTH);
+  } else {
+    evt.target.setCustomValidity('');
+    resetBorderColor(evt);
+    if (evt.type === 'blur') {
+      evt.target.value = targetValueTrim;
     }
-  });
-}
-
-// дополнительная валидация minlength и maxlength Заголовка объявления внутри скрипта
-noticeTitle.addEventListener('input', function (evt) {
-  if (evt.target.value.length < MIN_LENGTH) {
-    evt.target.style.borderWidth = '2px';
-    evt.target.style.borderColor = 'red';
-    evt.target.setCustomValidity('Количество символов поля должно быть не меньше ' + String(MIN_LENGTH));
-  } else if (evt.target.value.length > MAX_LENGTH) {
-    evt.target.style.borderWidth = '2px';
-    evt.target.style.borderColor = 'red';
-    evt.target.setCustomValidity('Количество символов поля должно быть не больше ' + String(MAX_LENGTH));
-  } else {
-    evt.target.setCustomValidity('');
-    evt.target.style.borderWidth = '';
-    evt.target.style.borderColor = '';
   }
-});
+};
 
-// дополнительная валидация min и max Цены за ночь внутри скрипта
-noticePrice.addEventListener('input', function (evt) {
-  if (evt.target.value < OFFER_PRICE[noticeType.value]) {
-    evt.target.style.borderWidth = '2px';
-    evt.target.style.borderColor = 'red';
-    evt.target.setCustomValidity('Значение поля должно быть не меньше ' + String(OFFER_PRICE[noticeType.value]));
+// функция валидации поля price
+var noticePriceEventHandler = function (evt) {
+  setBorderColor(evt.target, 'red');
+  if (!isNumeric(evt.target.value)) {
+    evt.target.setCustomValidity('Значение поля должно быть числом');
+  } else if (evt.target.value < OFFER_PRICE[noticeType.value]) {
+    evt.target.setCustomValidity('Значение поля должно быть не меньше ' + OFFER_PRICE[noticeType.value]);
   } else if (evt.target.value > MAX_PRICE) {
-    evt.target.style.borderWidth = '2px';
-    evt.target.style.borderColor = 'red';
-    evt.target.setCustomValidity('Значение поля должно быть не больше ' + String(MAX_PRICE));
+    evt.target.setCustomValidity('Значение поля должно быть не больше ' + MAX_PRICE);
   } else {
     evt.target.setCustomValidity('');
-    evt.target.style.borderWidth = '';
-    evt.target.style.borderColor = '';
+    resetBorderColor(evt);
   }
-});
+};
+
+// функция валидации поля address
+var noticeAddressEventHandler = function (evt) {
+  var targetValue = String(evt.target.value);
+  var targetValueTrim = targetValue.trim();
+  setBorderColor(evt.target, 'red');
+  if (targetValueTrim.length == 0) {
+    evt.target.setCustomValidity('Обязательное поле');
+  } else {
+    evt.target.setCustomValidity('');
+    resetBorderColor(evt);
+    if (evt.type === 'blur') {
+      evt.target.value = targetValueTrim;
+    }
+  }
+};
+
+// валидация Заголовка объявления внутри скрипта
+noticeTitle.addEventListener('blur', noticeTitleEventHandler);
+noticeTitle.addEventListener('focus', noticeTitleEventHandler);
+noticeTitle.addEventListener('input', noticeTitleEventHandler);
+
+// валидация  Цены за ночь внутри скрипта
+noticePrice.addEventListener('blur', noticePriceEventHandler);
+noticePrice.addEventListener('focus', noticePriceEventHandler);
+noticePrice.addEventListener('input', noticePriceEventHandler);
+
+// валидация Адреса внутри скрипта
+noticeAddress.value = ADDRESS;
+noticeAddress.addEventListener('blur', noticeAddressEventHandler);
+noticeAddress.addEventListener('focus', noticeAddressEventHandler);
+noticeAddress.addEventListener('input', noticeAddressEventHandler);
 
 // функция синхронизации 2-х полей формы при их изменении
 var formFieldSync = function (formFirstField, formSecondField) {
@@ -322,7 +350,8 @@ noticeType.addEventListener('change', function (evt) {
   noticePrice.min = OFFER_PRICE[evt.target.value];
   noticePrice.value = OFFER_PRICE[evt.target.value];
   // инициализируем проверку input для Прайса
-  inputEvent(noticePrice);
+  resetColorFlag = true;
+  callEvent(noticePrice, 'input');
 });
 
 // синхронизация количества гостей и комнат
@@ -352,22 +381,27 @@ noticeRoomNumber.addEventListener('change', function (evt) {
 });
 
 // инициализируем событие синхронизации гостей и комнат изначально
-changeEvent(noticeRoomNumber);
+callEvent(noticeRoomNumber, 'change');
 // инициализируем событие синхронизации типа жилья и цены
-changeEvent(noticeType);
+callEvent(noticeType, 'change');
 
 var formSubmit = noticeForm.querySelector('.form__submit');
 formSubmit.addEventListener('click', function () {
-  // при отправке формы инициализируем проверку input для Заголовка и Прайса
-  inputEvent(noticeTitle);
-  inputEvent(noticePrice);
+  // при отправке формы инициализируем проверку input для Заголовка, Прайса и Адреса
+  for (i = 0; i < checkInput.length; i++) {
+    for (var j = 0; j < CHECK_FIELDS.length; j++) {
+      if (checkInput[i].id === CHECK_FIELDS[j]) {
+        resetColorFlag = true;
+        callEvent(checkInput[i], 'input');
+      }
+    }
+  }
 });
 
 var formReset = noticeForm.querySelector('.form__reset');
-formReset.addEventListener('click', function () {
+formReset.addEventListener('click', function (evt) {
   // при очистке формы сбрасываем состояния красных полей
   for (i = 0; i < checkInput.length; i++) {
-    checkInput[i].style.borderWidth = '';
-    checkInput[i].style.borderColor = '';
+    setBorderColor(checkInput[i], '');
   }
 });
