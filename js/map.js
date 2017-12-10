@@ -236,27 +236,22 @@ function isNumeric(num) {
   return !isNaN(parseFloat(num)) && isFinite(num);
 }
 
-// функция инициализации события Change
+// функция инициализации события по полю и типу
 var callEvent = function (objectOfEvent, eventType) {
   var event = new Event(eventType);
   objectOfEvent.dispatchEvent(event);
 };
-// функция инициализации события input
-var inputEvent = function (objectOfEvent) {
-  var event = new Event('input');
-  objectOfEvent.dispatchEvent(event);
-};
 
-// Функция сброса красного цвета рамки. Рамка становится зеленый при resetColorFlag == false
+// функция сброса красного цвета рамки. Рамка становится зеленый при resetColorFlag == false
 var resetBorderColor = function (evt) {
-  if (evt.type === 'input' && resetColorFlag == false) {
+  if (evt.type === 'input' && resetColorFlag === false) {
     setBorderColor(evt.target, 'green');
   } else {
     setBorderColor(evt.target, '');
     resetColorFlag = false;
   }
 };
-
+// функция изменения цвета рамки
 var setBorderColor = function (fieldObject, fieldColor) {
   fieldObject.style.borderColor = fieldColor;
   if (fieldColor === '') {
@@ -271,7 +266,7 @@ var noticeTitleEventHandler = function (evt) {
   var targetValue = String(evt.target.value);
   var targetValueTrim = targetValue.trim();
   setBorderColor(evt.target, 'red');
-  if (targetValueTrim.length == 0) {
+  if (targetValueTrim.length === 0) {
     evt.target.setCustomValidity('Обязательное поле');
   } else if (targetValueTrim.length < MIN_LENGTH) {
     evt.target.setCustomValidity('Количество символов поля должно быть не меньше ' + MIN_LENGTH);
@@ -306,7 +301,7 @@ var noticeAddressEventHandler = function (evt) {
   var targetValue = String(evt.target.value);
   var targetValueTrim = targetValue.trim();
   setBorderColor(evt.target, 'red');
-  if (targetValueTrim.length == 0) {
+  if (targetValueTrim.length === 0) {
     evt.target.setCustomValidity('Обязательное поле');
   } else {
     evt.target.setCustomValidity('');
@@ -399,7 +394,7 @@ formSubmit.addEventListener('click', function () {
 });
 
 var formReset = noticeForm.querySelector('.form__reset');
-formReset.addEventListener('click', function (evt) {
+formReset.addEventListener('click', function () {
   // при очистке формы сбрасываем состояния красных полей
   for (i = 0; i < checkInput.length; i++) {
     setBorderColor(checkInput[i], '');
