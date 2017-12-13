@@ -16,7 +16,7 @@
       mapCard.querySelector('.popup__avatar').src = array.author.avatar;
       mapCard.dataset.mapCardId = indexNumber;
       mapCard.setAttribute('hidden', 'true');
-      map.appendChild(mapCard);
+      window.map.appendChild(mapCard);
     },
 
     // функция показа карточки объявления

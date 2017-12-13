@@ -98,7 +98,7 @@
   window.noticeForm = document.querySelector('.notice__form');
   window.noticeFieldset = window.noticeForm.querySelectorAll('fieldset');
   for (var i = 0; i < window.noticeFieldset.length; i++) {
-    noticeFieldset[i].setAttribute('disabled', 'true');
+    window.noticeFieldset[i].setAttribute('disabled', 'true');
   }
 
   // создаем массив
@@ -113,7 +113,7 @@
       offer: {
         title: window.data.getOfferTitle(offerTitles),
         address: locationX + ', ' + locationY,
-        price: window.data.getRandomValue(MIN_PRICE, MAX_PRICE),
+        price: window.data.getRandomValue(window.MIN_PRICE, window.MAX_PRICE),
         type: window.data.getRandomArrayElement(OFFER_TYPES),
         rooms: window.data.getRandomValue(MIN_ROOMS, MAX_ROOMS),
         guests: window.data.getRandomValue(1, 4),

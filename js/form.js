@@ -1,15 +1,15 @@
 'use strict';
 
 ( function () {
-  var noticeTitle = noticeForm.querySelector('[id = "title"]');
-  var noticeAddress = noticeForm.querySelector('[id = "address"]');
-  var noticeTimein = noticeForm.querySelector('[id = "timein"]');
-  var noticeTimeout = noticeForm.querySelector('[id = "timeout"]');
-  var noticeType = noticeForm.querySelector('[id = "type"]');
-  var noticePrice = noticeForm.querySelector('[id = "price"]');
-  var noticeRoomNumber = noticeForm.querySelector('[id = "room_number"]');
-  var noticeCapacity = noticeForm.querySelector('[id = "capacity"]');
-  var checkInput = noticeForm.querySelectorAll('input');
+  var noticeTitle = window.noticeForm.querySelector('[id = "title"]');
+  var noticeAddress = window.noticeForm.querySelector('[id = "address"]');
+  var noticeTimein = window.noticeForm.querySelector('[id = "timein"]');
+  var noticeTimeout = window.noticeForm.querySelector('[id = "timeout"]');
+  var noticeType = window.noticeForm.querySelector('[id = "type"]');
+  var noticePrice = window.noticeForm.querySelector('[id = "price"]');
+  var noticeRoomNumber = window.noticeForm.querySelector('[id = "room_number"]');
+  var noticeCapacity = window.noticeForm.querySelector('[id = "capacity"]');
+  var checkInput = window.noticeForm.querySelectorAll('input');
   var ADDRESS = '620, 450';
   var OFFER_PRICE = {
     flat: 1000,
@@ -122,7 +122,7 @@
       }
       noticeCapacity.value = '0';
     } else { // активируем опции числа гостей при количестве комнат, кроме 100
-      for (var i = 0; i < noticeCapacity.options.length; i++) {
+      for (i = 0; i < noticeCapacity.options.length; i++) {
         noticeCapacity.options[i].setAttribute('hidden', 'true');
         for (var j = 1; j <= targetElement.value; j++) {
           if (noticeCapacity.options[i].value === String(j)) {
@@ -139,7 +139,7 @@
   // инициализируем событие синхронизации типа жилья и цены
   window.data.callEvent(noticeType, 'change');
 
-  var formSubmit = noticeForm.querySelector('.form__submit');
+  var formSubmit = window.noticeForm.querySelector('.form__submit');
   formSubmit.addEventListener('click', function () {
     // при отправке формы инициализируем проверку input для Заголовка, Прайса и Адреса
     for (var i = 0; i < checkInput.length; i++) {
@@ -151,7 +151,7 @@
     }
   });
 
-  var formReset = noticeForm.querySelector('.form__reset');
+  var formReset = window.noticeForm.querySelector('.form__reset');
   formReset.addEventListener('click', function () {
     // при очистке формы сбрасываем состояния красных полей
     for (var i = 0; i < checkInput.length; i++) {

@@ -8,15 +8,15 @@
   // При перетаскивании метки с кексом, активируем карту и форму, добавляем метки на карту
   mapPinMain.addEventListener('mouseup', function () {
     window.map.classList.remove('map--faded');
-    mapPins.appendChild(fragment);
+    mapPins.appendChild(window.fragment);
     window.noticeForm.classList.remove('notice__form--disabled');
     for (var i = 0; i < window.noticeFieldset.length; i++) {
-      noticeFieldset[i].disabled = false;
+      window.noticeFieldset[i].disabled = false;
     }
   });
 
   // создаем карточки объявлений
-  for (var i = 0; i < ads.length; i++) {
+  for (var i = 0; i < window.ads.length; i++) {
     window.card.getMapCard(window.ads[i], i);
   }
 
