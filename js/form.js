@@ -1,6 +1,6 @@
 'use strict';
 
-( function () {
+(function () {
   var noticeTitle = window.noticeForm.querySelector('[id = "title"]');
   var noticeAddress = window.noticeForm.querySelector('[id = "address"]');
   var noticeTimein = window.noticeForm.querySelector('[id = "timein"]');
