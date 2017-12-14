@@ -1,15 +1,17 @@
 'use strict';
 
 (function () {
-  var noticeTitle = window.noticeForm.querySelector('[id = "title"]');
-  var noticeAddress = window.noticeForm.querySelector('[id = "address"]');
-  var noticeTimein = window.noticeForm.querySelector('[id = "timein"]');
-  var noticeTimeout = window.noticeForm.querySelector('[id = "timeout"]');
-  var noticeType = window.noticeForm.querySelector('[id = "type"]');
-  var noticePrice = window.noticeForm.querySelector('[id = "price"]');
-  var noticeRoomNumber = window.noticeForm.querySelector('[id = "room_number"]');
-  var noticeCapacity = window.noticeForm.querySelector('[id = "capacity"]');
-  var checkInput = window.noticeForm.querySelectorAll('input');
+  var noticeTitle = window.vars.noticeForm.querySelector('[id = "title"]');
+  var noticeAddress = window.vars.noticeForm.querySelector('[id = "address"]');
+  var noticeTimein = window.vars.noticeForm.querySelector('[id = "timein"]');
+  var noticeTimeout = window.vars.noticeForm.querySelector('[id = "timeout"]');
+  var noticeType = window.vars.noticeForm.querySelector('[id = "type"]');
+  var noticePrice = window.vars.noticeForm.querySelector('[id = "price"]');
+  var noticeRoomNumber = window.vars.noticeForm.querySelector('[id = "room_number"]');
+  var noticeCapacity = window.vars.noticeForm.querySelector('[id = "capacity"]');
+  var checkInput = window.vars.noticeForm.querySelectorAll('input');
+  var formSubmit = window.vars.noticeForm.querySelector('.form__submit');
+  var formReset = window.vars.noticeForm.querySelector('.form__reset');
   var ADDRESS = '620, 450';
   var OFFER_PRICE = {
     flat: 1000,
@@ -38,12 +40,16 @@
     setBorderColor(evt.target, 'red');
     if (targetValueTrim.length === 0) {
       evt.target.setCustomValidity('Обязательное поле');
+      var customValidityMessageForHTML = 'Обязательное поле';
     } else if (targetValueTrim.length < MIN_LENGTH) {
       evt.target.setCustomValidity('Количество символов поля должно быть не меньше ' + MIN_LENGTH);
+      customValidityMessageForHTML = 'Количество символов поля должно быть не меньше ' + MIN_LENGTH;
     } else if (targetValueTrim.length > MAX_LENGTH) {
       evt.target.setCustomValidity('Количество символов поля должно быть не больше ' + MAX_LENGTH);
+      customValidityMessageForHTML = 'Количество символов поля должно быть не больше ' + MAX_LENGTH;
     } else {
       evt.target.setCustomValidity('');
+      customValidityMessageForHTML = ''
       setBorderColor(evt.target, '');
       evt.target.value = targetValueTrim;
     }
@@ -52,12 +58,12 @@
   // функция валидации поля price
   var noticePriceEventHandler = function (evt) {
     setBorderColor(evt.target, 'red');
-    if (!window.data.isNumeric(evt.target.value)) {
+    if (!window.util.isNumeric(evt.target.value)) {
       evt.target.setCustomValidity('Значение поля должно быть числом');
     } else if (evt.target.value < OFFER_PRICE[noticeType.value]) {
       evt.target.setCustomValidity('Значение поля должно быть не меньше ' + OFFER_PRICE[noticeType.value]);
-    } else if (evt.target.value > window.MAX_PRICE) {
-      evt.target.setCustomValidity('Значение поля должно быть не больше ' + window.MAX_PRICE);
+    } else if (evt.target.value > window.vars.maxPrice) {
+      evt.target.setCustomValidity('Значение поля должно быть не больше ' + window.vars.maxPrice);
     } else {
       evt.target.setCustomValidity('');
       setBorderColor(evt.target, '');
@@ -105,7 +111,7 @@
     noticePrice.min = OFFER_PRICE[evt.target.value];
     noticePrice.value = OFFER_PRICE[evt.target.value];
     // инициализируем проверку input для Прайса
-    window.data.callEvent(noticePrice, 'blur');
+    window.util.callEvent(noticePrice, 'blur');
   });
 
   // синхронизация количества гостей и комнат
@@ -135,23 +141,21 @@
   });
 
   // инициализируем событие синхронизации гостей и комнат изначально
-  window.data.callEvent(noticeRoomNumber, 'change');
+  window.util.callEvent(noticeRoomNumber, 'change');
   // инициализируем событие синхронизации типа жилья и цены
-  window.data.callEvent(noticeType, 'change');
+  window.util.callEvent(noticeType, 'change');
 
-  var formSubmit = window.noticeForm.querySelector('.form__submit');
   formSubmit.addEventListener('click', function () {
     // при отправке формы инициализируем проверку input для Заголовка, Прайса и Адреса
     for (var i = 0; i < checkInput.length; i++) {
       for (var j = 0; j < CHECK_FIELDS.length; j++) {
         if (checkInput[i].id === CHECK_FIELDS[j]) {
-          window.data.callEvent(checkInput[i], 'blur');
+          window.util.callEvent(checkInput[i], 'blur');
         }
       }
     }
   });
 
-  var formReset = window.noticeForm.querySelector('.form__reset');
   formReset.addEventListener('click', function () {
     // при очистке формы сбрасываем состояния красных полей
     for (var i = 0; i < checkInput.length; i++) {

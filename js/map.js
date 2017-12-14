@@ -4,21 +4,17 @@
   var mapPinMain = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
   var targetPrevious = null; // переменная для предыдущего целевого элемента метки объявления
+  //var fragment = document.createDocumentFragment();
 
   // При перетаскивании метки с кексом, активируем карту и форму, добавляем метки на карту
   mapPinMain.addEventListener('mouseup', function () {
-    window.map.classList.remove('map--faded');
-    mapPins.appendChild(window.fragment);
-    window.noticeForm.classList.remove('notice__form--disabled');
-    for (var i = 0; i < window.noticeFieldset.length; i++) {
-      window.noticeFieldset[i].disabled = false;
+    window.vars.map.classList.remove('map--faded');
+    window.pin.addFragment(mapPins);
+    window.vars.noticeForm.classList.remove('notice__form--disabled');
+    for (var i = 0; i < window.vars.noticeFieldset.length; i++) {
+      window.vars.noticeFieldset[i].disabled = false;
     }
   });
-
-  // создаем карточки объявлений
-  for (var i = 0; i < window.ads.length; i++) {
-    window.card.getMapCard(window.ads[i], i);
-  }
 
   // при нажатии метки (кроме кекса) показываем объявление
   mapPins.addEventListener('click', function (evt) {
