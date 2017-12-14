@@ -40,16 +40,12 @@
     setBorderColor(evt.target, 'red');
     if (targetValueTrim.length === 0) {
       evt.target.setCustomValidity('Обязательное поле');
-      var customValidityMessageForHTML = 'Обязательное поле';
     } else if (targetValueTrim.length < MIN_LENGTH) {
       evt.target.setCustomValidity('Количество символов поля должно быть не меньше ' + MIN_LENGTH);
-      customValidityMessageForHTML = 'Количество символов поля должно быть не меньше ' + MIN_LENGTH;
     } else if (targetValueTrim.length > MAX_LENGTH) {
       evt.target.setCustomValidity('Количество символов поля должно быть не больше ' + MAX_LENGTH);
-      customValidityMessageForHTML = 'Количество символов поля должно быть не больше ' + MAX_LENGTH;
     } else {
       evt.target.setCustomValidity('');
-      customValidityMessageForHTML = ''
       setBorderColor(evt.target, '');
       evt.target.value = targetValueTrim;
     }

@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var MIN_PRICE = 1000;
   var MAX_PRICE = 1000000;
   var KEY_CODES = {
     ESC: 27,
@@ -19,5 +18,5 @@
     map: map,
     noticeForm: noticeForm,
     noticeFieldset: noticeFieldset
-  }
+  };
 })();
