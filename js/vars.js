@@ -10,6 +10,7 @@
   var map = document.querySelector('.map');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFieldset = noticeForm.querySelectorAll('fieldset');
+  var noticeAddress = noticeForm.querySelector('[id = "address"]');
 
   window.vars = {
     maxPrice: MAX_PRICE,
@@ -17,6 +18,7 @@
     ads: ads,
     map: map,
     noticeForm: noticeForm,
-    noticeFieldset: noticeFieldset
+    noticeFieldset: noticeFieldset,
+    noticeAddress: noticeAddress
   };
 })();
