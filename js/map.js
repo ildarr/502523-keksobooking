@@ -20,7 +20,6 @@
   var locationX = mapPinMain.offsetLeft + WIDTH_IMAGE / 2;
 
   window.vars.noticeAddress.value = 'x: {' + locationX + '}, y: {' + locationY + '}';
-  window.util.callEvent(window.vars.noticeAddress, "change");
 
   // После нажатия мыши на метку с кексом передвигаем метку в заданных пределах
   mapPinMain.addEventListener('mousedown', function (evt) {
@@ -62,13 +61,12 @@
         mapPinMain.style.top = locationY - HEIGHT_IMAGE + 'px';
       } else if (locationY > LOCATION.y.max) {
         locationY = LOCATION.y.max;
-        mapPinMain.style.top = locationY - HEIGHT_IMAGE + 'px'
+        mapPinMain.style.top = locationY - HEIGHT_IMAGE + 'px';
       } else {
         mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
       }
 
       window.vars.noticeAddress.value = 'x: {' + locationX + '}, y: {' + locationY + '}';
-      window.util.callEvent(window.vars.noticeAddress, "change");
     };
 
     var onMouseUp = function (upEvt) {
