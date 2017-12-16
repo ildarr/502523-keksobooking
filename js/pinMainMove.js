@@ -69,7 +69,7 @@
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
       // При отпускании мыши, активируем карту и форму, добавляем метки на карту
-      window.map.activateMap()
+      window.map.activateMap();
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
