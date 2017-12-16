@@ -8,6 +8,7 @@
   };
   var ads = [];
   var map = document.querySelector('.map');
+  var mapPinMain = document.querySelector('.map__pin--main');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFieldset = noticeForm.querySelectorAll('fieldset');
   var noticeAddress = noticeForm.querySelector('[id = "address"]');
@@ -17,6 +18,7 @@
     keyCodes: KEY_CODES,
     ads: ads,
     map: map,
+    mapPinMain: mapPinMain,
     noticeForm: noticeForm,
     noticeFieldset: noticeFieldset,
     noticeAddress: noticeAddress
