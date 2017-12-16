@@ -8,15 +8,19 @@
   };
   var ads = [];
   var map = document.querySelector('.map');
+  var mapPinMain = document.querySelector('.map__pin--main');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFieldset = noticeForm.querySelectorAll('fieldset');
+  var noticeAddress = noticeForm.querySelector('[id = "address"]');
 
   window.vars = {
     maxPrice: MAX_PRICE,
     keyCodes: KEY_CODES,
     ads: ads,
     map: map,
+    mapPinMain: mapPinMain,
     noticeForm: noticeForm,
-    noticeFieldset: noticeFieldset
+    noticeFieldset: noticeFieldset,
+    noticeAddress: noticeAddress
   };
 })();

@@ -1,25 +1,28 @@
 'use strict';
 
 (function () {
-  var mapPinMain = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
   var targetPrevious = null; // переменная для предыдущего целевого элемента метки объявления
 
-  // При перетаскивании метки с кексом, активируем карту и форму, добавляем метки на карту
-  mapPinMain.addEventListener('mouseup', function () {
+  // функция активирует карту и форму, добавляет метки на карту
+  var activateMap = function () {
     window.vars.map.classList.remove('map--faded');
     window.pin.addFragment(mapPins);
     window.vars.noticeForm.classList.remove('notice__form--disabled');
     for (var i = 0; i < window.vars.noticeFieldset.length; i++) {
       window.vars.noticeFieldset[i].disabled = false;
     }
-  });
+  };
+
+  window.map = {
+    activateMap: activateMap
+  };
 
   // при нажатии метки (кроме кекса) показываем объявление
   mapPins.addEventListener('click', function (evt) {
     var targetElement = evt.target;
     while (targetElement !== mapPins) {
-      if ((targetElement.tagName === 'BUTTON') && (targetElement !== mapPinMain)) {
+      if ((targetElement.tagName === 'BUTTON') && (targetElement !== window.vars.mapPinMain)) {
         if (targetPrevious !== null) {
           window.card.closeMapCard(targetPrevious.dataset.mapPinId);
         }

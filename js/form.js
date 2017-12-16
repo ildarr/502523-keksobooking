@@ -2,7 +2,6 @@
 
 (function () {
   var noticeTitle = window.vars.noticeForm.querySelector('[id = "title"]');
-  var noticeAddress = window.vars.noticeForm.querySelector('[id = "address"]');
   var noticeTimein = window.vars.noticeForm.querySelector('[id = "timein"]');
   var noticeTimeout = window.vars.noticeForm.querySelector('[id = "timeout"]');
   var noticeType = window.vars.noticeForm.querySelector('[id = "type"]');
@@ -12,7 +11,7 @@
   var checkInput = window.vars.noticeForm.querySelectorAll('input');
   var formSubmit = window.vars.noticeForm.querySelector('.form__submit');
   var formReset = window.vars.noticeForm.querySelector('.form__reset');
-  var ADDRESS = '620, 450';
+
   var OFFER_PRICE = {
     flat: 1000,
     bungalo: 0,
@@ -87,8 +86,7 @@
   noticePrice.addEventListener('blur', noticePriceEventHandler);
 
   // валидация Адреса внутри скрипта
-  noticeAddress.value = ADDRESS;
-  noticeAddress.addEventListener('blur', noticeAddressEventHandler);
+  window.vars.noticeAddress.addEventListener('blur', noticeAddressEventHandler);
 
   // функция синхронизации 2-х полей формы при их изменении
   var formFieldSync = function (formFirstField, formSecondField) {
