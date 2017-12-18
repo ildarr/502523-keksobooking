@@ -17,13 +17,13 @@
   var CHECK_FIELDS = ['title', 'address', 'price'];
   var MIN_LENGTH = 30;
   var MAX_LENGTH = 100;
-  var ROOM_NUMBER = ['1', '2', '3', '100']
+  var ROOM_NUMBER = ['1', '2', '3', '100'];
   var CAPACITY = [
     ['1'],
     ['2', '1'],
     ['3', '2', '1'],
     ['0']
-  ]
+  ];
 
   // функция изменения цвета рамки
   var setBorderColor = function (fieldObject, fieldColor) {
@@ -92,7 +92,7 @@
   window.vars.noticeAddress.addEventListener('blur', noticeAddressEventHandler);
 
   // колл-бэк функция синхронизации значений 2-х элементов
-  var syncValues = function(element, value) {
+  var syncValues = function (element, value) {
     element.value = value;
   };
   // вызов функции синхронизации времени заезда-выезда
@@ -100,7 +100,7 @@
   window.synchronizeFields(noticeTimeout, noticeTimein, window.vars.offerCheckouts, window.vars.offerCheckins, syncValues);
 
   // колл-бэк функция синхронизации значения с min значением элемента
-  var syncValueWithMin = function(element, value) {
+  var syncValueWithMin = function (element, value) {
     element.min = value;
     element.value = value;
     minValue = value;
@@ -111,7 +111,7 @@
   window.synchronizeFields(noticeType, noticePrice, OFFER_TYPES, OFFER_PRICES, syncValueWithMin);
 
   // колл-бэк функция синхронизации массива со значением
-  var syncArrayWithValue = function(element, value) {
+  var syncArrayWithValue = function (element, value) {
     for (var i = 0; i < element.options.length; i++) {
       element.options[i].setAttribute('hidden', 'true');
       for (var j = 0; j <= value.length; j++) {
