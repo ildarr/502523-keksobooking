@@ -11,16 +11,19 @@
   var checkInput = window.vars.noticeForm.querySelectorAll('input');
   var formSubmit = window.vars.noticeForm.querySelector('.form__submit');
   var formReset = window.vars.noticeForm.querySelector('.form__reset');
-
-  var OFFER_PRICE = {
-    flat: 1000,
-    bungalo: 0,
-    house: 5000,
-    palace: 10000
-  };
+  var minValue = window.vars.minPrice;
+  var OFFER_TYPES = ['flat', 'bungalo', 'house', 'palace'];
+  var OFFER_PRICES = [1000, 0, 5000, 10000];
   var CHECK_FIELDS = ['title', 'address', 'price'];
   var MIN_LENGTH = 30;
   var MAX_LENGTH = 100;
+  var ROOM_NUMBER = ['1', '2', '3', '100']
+  var CAPACITY = [
+    ['1'],
+    ['2', '1'],
+    ['3', '2', '1'],
+    ['0']
+  ]
 
   // функция изменения цвета рамки
   var setBorderColor = function (fieldObject, fieldColor) {
@@ -55,8 +58,8 @@
     setBorderColor(evt.target, 'red');
     if (!window.util.isNumeric(evt.target.value)) {
       evt.target.setCustomValidity('Значение поля должно быть числом');
-    } else if (evt.target.value < OFFER_PRICE[noticeType.value]) {
-      evt.target.setCustomValidity('Значение поля должно быть не меньше ' + OFFER_PRICE[noticeType.value]);
+    } else if (evt.target.value < minValue) {
+      evt.target.setCustomValidity('Значение поля должно быть не меньше ' + minValue);
     } else if (evt.target.value > window.vars.maxPrice) {
       evt.target.setCustomValidity('Значение поля должно быть не больше ' + window.vars.maxPrice);
     } else {
@@ -88,51 +91,39 @@
   // валидация Адреса внутри скрипта
   window.vars.noticeAddress.addEventListener('blur', noticeAddressEventHandler);
 
-  // функция синхронизации 2-х полей формы при их изменении
-  var formFieldSync = function (formFirstField, formSecondField) {
-    formFirstField.addEventListener('change', function (evt) {
-      var targetElement = evt.target;
-      formSecondField.value = targetElement.value;
-    });
+  // колл-бэк функция синхронизации значений 2-х элементов
+  var syncValues = function(element, value) {
+    element.value = value;
+  };
+  // вызов функции синхронизации времени заезда-выезда
+  window.synchronizeFields(noticeTimein, noticeTimeout, window.vars.offerCheckins, window.vars.offerCheckouts, syncValues);
+  window.synchronizeFields(noticeTimeout, noticeTimein, window.vars.offerCheckouts, window.vars.offerCheckins, syncValues);
+
+  // колл-бэк функция синхронизации значения с min значением элемента
+  var syncValueWithMin = function(element, value) {
+    element.min = value;
+    element.value = value;
+    minValue = value;
+    window.util.callEvent(element, 'blur');
   };
 
-  // вызов функции синхронизации полей времени заезда-выезда
-  formFieldSync(noticeTimeout, noticeTimein);
-  formFieldSync(noticeTimein, noticeTimeout);
-
   // синхронизация типа жилья и минимальной цены
-  noticeType.addEventListener('change', function (evt) {
-    noticePrice.min = OFFER_PRICE[evt.target.value];
-    noticePrice.value = OFFER_PRICE[evt.target.value];
-    // инициализируем проверку input для Прайса
-    window.util.callEvent(noticePrice, 'blur');
-  });
+  window.synchronizeFields(noticeType, noticePrice, OFFER_TYPES, OFFER_PRICES, syncValueWithMin);
 
-  // синхронизация количества гостей и комнат
-  noticeRoomNumber.addEventListener('change', function (evt) {
-    var targetElement = evt.target;
-    // активируем опцию числа гостей при количестве комнат =100
-    if (targetElement.value === '100') {
-      for (var i = 0; i < noticeCapacity.options.length; i++) {
-        if (noticeCapacity.options[i].value === '0') {
-          noticeCapacity.options[i].setAttribute('hidden', 'false');
-        } else {
-          noticeCapacity.options[i].setAttribute('hidden', 'true');
+  // колл-бэк функция синхронизации массива со значением
+  var syncArrayWithValue = function(element, value) {
+    for (var i = 0; i < element.options.length; i++) {
+      element.options[i].setAttribute('hidden', 'true');
+      for (var j = 0; j <= value.length; j++) {
+        if (element.options[i].value === value[j]) {
+          element.options[i].removeAttribute('hidden');
         }
       }
-      noticeCapacity.value = '0';
-    } else { // активируем опции числа гостей при количестве комнат, кроме 100
-      for (i = 0; i < noticeCapacity.options.length; i++) {
-        noticeCapacity.options[i].setAttribute('hidden', 'true');
-        for (var j = 1; j <= targetElement.value; j++) {
-          if (noticeCapacity.options[i].value === String(j)) {
-            noticeCapacity.options[i].removeAttribute('hidden');
-          }
-        }
-      }
-      noticeCapacity.value = targetElement.value;
     }
-  });
+    element.value = value[0];
+  };
+  // синхронизация количества гостей и комнат
+  window.synchronizeFields(noticeRoomNumber, noticeCapacity, ROOM_NUMBER, CAPACITY, syncArrayWithValue);
 
   // инициализируем событие синхронизации гостей и комнат изначально
   window.util.callEvent(noticeRoomNumber, 'change');

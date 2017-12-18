@@ -24,9 +24,9 @@
     while (targetElement !== mapPins) {
       if ((targetElement.tagName === 'BUTTON') && (targetElement !== window.vars.mapPinMain)) {
         if (targetPrevious !== null) {
-          window.card.closeMapCard(targetPrevious.dataset.mapPinId);
+          window.showCard.closeMapCard(targetPrevious.dataset.mapPinId);
         }
-        window.card.openMapCard(targetElement.dataset.mapPinId);
+        window.showCard.openMapCard(targetElement.dataset.mapPinId);
         targetPrevious = targetElement;
         return;
       }

@@ -4,8 +4,6 @@
   var OFFER_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
   var OFFER_TYPES = ['flat', 'house', 'bungalo'];
   var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var OFFER_CHECKINS = ['12:00', '13:00', '14:00'];
-  var OFFER_CHECKOUTS = ['12:00', '13:00', '14:00'];
   var MIN_ROOMS = 1;
   var MAX_ROOMS = 5;
   var LOCATION = {
@@ -18,7 +16,6 @@
       max: 500
     }
   };
-  var MIN_PRICE = 1000;
   var offerTitles = OFFER_TITLES.slice(0, OFFER_TITLES.length);
 
   // Деактивируем поля ввода форм
@@ -38,12 +35,12 @@
       offer: {
         title: window.util.getOfferTitle(offerTitles),
         address: locationX + ', ' + locationY,
-        price: window.util.getRandomValue(MIN_PRICE, window.vars.maxPrice),
+        price: window.util.getRandomValue(window.vars.minPrice, window.vars.maxPrice),
         type: window.util.getRandomArrayElement(OFFER_TYPES),
         rooms: window.util.getRandomValue(MIN_ROOMS, MAX_ROOMS),
         guests: window.util.getRandomValue(1, 4),
-        checkin: window.util.getRandomArrayElement(OFFER_CHECKINS),
-        checkout: window.util.getRandomArrayElement(OFFER_CHECKOUTS),
+        checkin: window.util.getRandomArrayElement(window.vars.offerCheckins),
+        checkout: window.util.getRandomArrayElement(window.vars.offerCheckouts),
         features: window.util.getOfferFeatures(OFFER_FEATURES),
         description: '',
         photos: []
