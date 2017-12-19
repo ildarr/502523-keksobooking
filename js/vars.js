@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var OFFER_CHECKINS = ['12:00', '13:00', '14:00'];
+  var OFFER_CHECKOUTS = ['12:00', '13:00', '14:00'];
+  var MIN_PRICE = 1000;
   var MAX_PRICE = 1000000;
   var KEY_CODES = {
     ESC: 27,
@@ -14,6 +17,7 @@
   var noticeAddress = noticeForm.querySelector('[id = "address"]');
 
   window.vars = {
+    minPrice: MIN_PRICE,
     maxPrice: MAX_PRICE,
     keyCodes: KEY_CODES,
     ads: ads,
@@ -21,6 +25,8 @@
     mapPinMain: mapPinMain,
     noticeForm: noticeForm,
     noticeFieldset: noticeFieldset,
-    noticeAddress: noticeAddress
+    noticeAddress: noticeAddress,
+    offerCheckins: OFFER_CHECKINS,
+    offerCheckouts: OFFER_CHECKOUTS
   };
 })();
