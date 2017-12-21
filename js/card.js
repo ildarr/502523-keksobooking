@@ -30,11 +30,6 @@
       popupClose.addEventListener('click', function () {
         window.card.closeMapCard(indexNumber);
       });
-      document.addEventListener('keydown', function (evt) {
-        if ((evt.keyCode === window.vars.keyCodes.ESC) && (window.backend.errorPopup.textContent === '')) {
-          window.card.closeMapCard(indexNumber);
-        }
-      });
     },
 
     // функция скрытия карточки объявления

@@ -33,4 +33,19 @@
       targetElement = targetElement.parentNode;
     }
   });
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === window.vars.keyCodes.ESC) {
+      if (window.backend.errorPopup.style.visibility === 'visible') {
+        window.backend.closeErrorHandler();
+      } else {
+        for (var i = 0; i < 8; i++) {
+          var mapCurrentCard = document.querySelector('[data-map-card-id = "' + i + '"]');
+          if (!mapCurrentCard.hasAttribute('hidden')) {
+            window.showCard(i, window.card.closeMapCard);
+          }
+        }
+      }
+    }
+  });
 })();
