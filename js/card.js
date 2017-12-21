@@ -31,7 +31,7 @@
         window.card.closeMapCard(indexNumber);
       });
       document.addEventListener('keydown', function (evt) {
-        if (evt.keyCode === window.vars.keyCodes.ESC) {
+        if ((evt.keyCode === window.vars.keyCodes.ESC) && (window.backend.errorPopup.textContent === '')) {
           window.card.closeMapCard(indexNumber);
         }
       });
@@ -46,9 +46,4 @@
       mapCurrentPin.classList.remove('map__pin--active');
     }
   };
-
-  // создаем карточки объявлений
-  for (var i = 0; i < window.vars.ads.length; i++) {
-    window.card.getMapCard(window.vars.ads[i], window.vars.map, i);
-  }
 })();
