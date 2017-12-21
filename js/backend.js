@@ -36,8 +36,8 @@
     errorPopup.style.left = '25%';
     errorPopup.style.width = '50%';
     errorPopup.style.height = '80px';
-    errorPopup.style.paddingTop = '18px'
-    errorPopup.style.textAlign = "center";
+    errorPopup.style.paddingTop = '18px';
+    errorPopup.style.textAlign = 'center';
     errorPopup.style.fontSize = '18px';
     errorPopup.style.backgroundColor = 'white';
     errorPopup.style.border = '3px solid red';

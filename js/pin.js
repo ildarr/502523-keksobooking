@@ -23,7 +23,7 @@
   window.backend.setErrorHandler();
   window.backend.load(successHandler, window.backend.openErrorHandler);
 
-  document.addEventListener('keydown',function (evt) {
+  document.addEventListener('keydown', function (evt) {
     if (evt.keyCode === window.vars.keyCodes.ESC) {
       setTimeout(window.backend.closeErrorHandler(), 1000);
     }
