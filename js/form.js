@@ -130,6 +130,19 @@
   // инициализируем событие синхронизации типа жилья и цены
   window.util.callEvent(noticeType, 'change');
 
+  var resetNoticeForm = function () {
+    var noticeAddressDefautValue = window.vars.noticeAddress.value;
+    window.vars.noticeForm.reset();
+    window.vars.noticeAddress.value = noticeAddressDefautValue;
+    noticeCapacity.value = 1;
+  };
+
+  window.vars.noticeForm.addEventListener('submit', function (evt) {
+    window.backend.closeErrorHandler();
+    window.backend.save(new FormData(window.vars.noticeForm), resetNoticeForm, window.backend.openErrorHandler);
+    evt.preventDefault();
+  });
+
   formSubmit.addEventListener('click', function () {
     // при отправке формы инициализируем проверку input для Заголовка, Прайса и Адреса
     for (var i = 0; i < checkInput.length; i++) {

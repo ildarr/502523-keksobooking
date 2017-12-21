@@ -30,11 +30,6 @@
       popupClose.addEventListener('click', function () {
         window.card.closeMapCard(indexNumber);
       });
-      document.addEventListener('keydown', function (evt) {
-        if (evt.keyCode === window.vars.keyCodes.ESC) {
-          window.card.closeMapCard(indexNumber);
-        }
-      });
     },
 
     // функция скрытия карточки объявления
@@ -46,9 +41,4 @@
       mapCurrentPin.classList.remove('map__pin--active');
     }
   };
-
-  // создаем карточки объявлений
-  for (var i = 0; i < window.vars.ads.length; i++) {
-    window.card.getMapCard(window.vars.ads[i], window.vars.map, i);
-  }
 })();
