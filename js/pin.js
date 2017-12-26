@@ -6,7 +6,6 @@
   var fragment = document.createDocumentFragment();
 
   var mapFilters = document.querySelector('.map__filters');
-  var mapFilter = mapFilters.querySelectorAll('.map__filter');
   var housingType = mapFilters.querySelector('[id = "housing-type"]');
   var housingPrice = mapFilters.querySelector('[id = "housing-price"]');
   var housingRooms = mapFilters.querySelector('[id = "housing-rooms"]');
