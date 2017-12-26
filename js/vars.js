@@ -11,10 +11,12 @@
   };
   var ads = [];
   var map = document.querySelector('.map');
+  var mapPins = document.querySelector('.map__pins');
   var mapPinMain = document.querySelector('.map__pin--main');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFieldset = noticeForm.querySelectorAll('fieldset');
   var noticeAddress = noticeForm.querySelector('[id = "address"]');
+  var targetPrevious = null; // переменная для предыдущего целевого элемента метки объявления
 
   window.vars = {
     minPrice: MIN_PRICE,
@@ -22,7 +24,9 @@
     keyCodes: KEY_CODES,
     ads: ads,
     map: map,
+    mapPins: mapPins,
     mapPinMain: mapPinMain,
+    targetPrevious: targetPrevious,
     noticeForm: noticeForm,
     noticeFieldset: noticeFieldset,
     noticeAddress: noticeAddress,
