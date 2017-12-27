@@ -13,6 +13,7 @@
   var map = document.querySelector('.map');
   var mapPins = document.querySelector('.map__pins');
   var mapPinMain = document.querySelector('.map__pin--main');
+  var mapFilters = document.querySelector('.map__filters');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFieldset = noticeForm.querySelectorAll('fieldset');
   var noticeAddress = noticeForm.querySelector('[id = "address"]');
@@ -26,6 +27,7 @@
     map: map,
     mapPins: mapPins,
     mapPinMain: mapPinMain,
+    mapFilters: mapFilters,
     targetPrevious: targetPrevious,
     noticeForm: noticeForm,
     noticeFieldset: noticeFieldset,

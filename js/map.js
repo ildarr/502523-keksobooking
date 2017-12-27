@@ -36,10 +36,12 @@
       if (window.backend.errorPopup.style.visibility === 'visible') {
         window.backend.closeErrorHandler();
       } else {
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < 5; i++) {
           var mapCurrentCard = document.querySelector('[data-map-card-id = "' + i + '"]');
-          if (!mapCurrentCard.hasAttribute('hidden')) {
-            window.showCard(i, window.card.closeMapCard);
+          if (mapCurrentCard !== null) {
+            if (!mapCurrentCard.hasAttribute('hidden')) {
+              window.showCard(i, window.card.closeMapCard);
+            }
           }
         }
       }
