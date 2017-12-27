@@ -23,8 +23,8 @@
   var featuresFilter = function (element) {
     var housingFeaturesCollection = housingFeatures.querySelectorAll('input[type="checkbox"]:checked');
     // преобразуем коллекцию в массив
-    var features = [].map.call(housingFeaturesCollection, function (element) {
-      return element.value;
+    var features = [].map.call(housingFeaturesCollection, function (elem) {
+      return elem.value;
     });
     return (features.every(function (currentElement) {
       return element.includes(currentElement);
@@ -41,6 +41,6 @@
 
   window.filters = {
     filterCondition: filterCondition
-  }
+  };
 
 })();
