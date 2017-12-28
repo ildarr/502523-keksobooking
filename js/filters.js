@@ -30,7 +30,7 @@
         sumIncludedValues += 1;
       }
     });
-    return (sumIncludedValues === features.length) ? true : false;
+    return sumIncludedValues === features.length;
   };
 
   var filterConditions = function (element) {
