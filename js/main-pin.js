@@ -16,7 +16,7 @@
   var locationY = window.vars.mapPinMain.offsetTop + HEIGHT_IMAGE;
   var locationX = window.vars.mapPinMain.offsetLeft + WIDTH_IMAGE / 2;
 
-  window.vars.noticeAddress.value = 'x: ' + locationX + ', y: ' + locationY;
+  window.form.getNoticeAddress(locationX, locationY);
 
   // После нажатия мыши на метку с кексом передвигаем метку в заданных пределах
   window.vars.mapPinMain.addEventListener('mousedown', function (evt) {
@@ -63,7 +63,7 @@
         window.vars.mapPinMain.style.top = (window.vars.mapPinMain.offsetTop - shift.y) + 'px';
       }
 
-      window.vars.noticeAddress.value = 'x: ' + locationX + ', y: ' + locationY;
+      window.form.getNoticeAddress(locationX, locationY);
     };
 
     var onMouseUp = function (upEvt) {

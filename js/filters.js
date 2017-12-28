@@ -1,11 +1,12 @@
 'use strict';
 
 (function () {
-  var housingType = window.vars.mapFilters.querySelector('[id = "housing-type"]');
-  var housingPrice = window.vars.mapFilters.querySelector('[id = "housing-price"]');
-  var housingRooms = window.vars.mapFilters.querySelector('[id = "housing-rooms"]');
-  var housingGuests = window.vars.mapFilters.querySelector('[id = "housing-guests"]');
-  var housingFeatures = window.vars.mapFilters.querySelector('[id = "housing-features"]');
+  var mapFilters = window.vars.map.querySelector('.map__filters');
+  var housingType = mapFilters.querySelector('[id = "housing-type"]');
+  var housingPrice = mapFilters.querySelector('[id = "housing-price"]');
+  var housingRooms = mapFilters.querySelector('[id = "housing-rooms"]');
+  var housingGuests = mapFilters.querySelector('[id = "housing-guests"]');
+  var housingFeatures = mapFilters.querySelector('[id = "housing-features"]');
 
   var priceCondition = function (element) {
     switch (housingPrice.value) {
@@ -22,16 +23,17 @@
   // условие фильтра для features
   var featuresFilter = function (element) {
     var housingFeaturesCollection = housingFeatures.querySelectorAll('input[type="checkbox"]:checked');
-    // преобразуем коллекцию в массив
+    var sumIncludedValues = 0;
+    // преобразуем коллекцию в массив и подсчитываем количество включений отмеченных features
     var features = [].map.call(housingFeaturesCollection, function (elem) {
-      return elem.value;
+      if (element.includes(elem.value)) {
+        sumIncludedValues += 1;
+      };
     });
-    return (features.every(function (currentElement) {
-      return element.includes(currentElement);
-    }));
+    return (sumIncludedValues === features.length) ? true: false;
   };
 
-  var filterCondition = function (element) {
+  var filterConditions = function (element) {
     return ((housingType.value === 'any') ? true : (element.offer.type === housingType.value))
     && ((housingPrice.value === 'any') ? true : priceCondition(element))
     && ((housingRooms.value === 'any') ? true : (element.offer.rooms === parseInt(housingRooms.value, 10)))
@@ -39,8 +41,13 @@
     && featuresFilter(element.offer.features);
   };
 
+  mapFilters.addEventListener('change', function () {
+    var filteredAds = window.vars.ads.filter(filterConditions);
+    window.pin.updateMapPins(filteredAds);
+  });
+
   window.filters = {
-    filterCondition: filterCondition
+    filterConditions: filterConditions
   };
 
 })();
