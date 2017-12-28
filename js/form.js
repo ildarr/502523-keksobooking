@@ -1,22 +1,15 @@
 'use strict';
 
 (function () {
-  var noticeTitle = window.vars.noticeForm.querySelector('[id = "title"]');
-  var noticeTimein = window.vars.noticeForm.querySelector('[id = "timein"]');
-  var noticeTimeout = window.vars.noticeForm.querySelector('[id = "timeout"]');
-  var noticeType = window.vars.noticeForm.querySelector('[id = "type"]');
-  var noticePrice = window.vars.noticeForm.querySelector('[id = "price"]');
-  var noticeRoomNumber = window.vars.noticeForm.querySelector('[id = "room_number"]');
-  var noticeCapacity = window.vars.noticeForm.querySelector('[id = "capacity"]');
-  var checkInput = window.vars.noticeForm.querySelectorAll('input');
-  var formSubmit = window.vars.noticeForm.querySelector('.form__submit');
-  var formReset = window.vars.noticeForm.querySelector('.form__reset');
-  var minValue = window.vars.minPrice;
+  var OFFER_CHECKINS = ['12:00', '13:00', '14:00'];
+  var OFFER_CHECKOUTS = ['12:00', '13:00', '14:00'];
   var OFFER_TYPES = ['flat', 'bungalo', 'house', 'palace'];
   var OFFER_PRICES = [1000, 0, 5000, 10000];
   var CHECK_FIELDS = ['title', 'address', 'price'];
   var MIN_LENGTH = 30;
   var MAX_LENGTH = 100;
+  var MIN_PRICE = 1000;
+  var MAX_PRICE = 1000000;
   var ROOM_NUMBER = ['1', '2', '3', '100'];
   var CAPACITY = [
     ['1'],
@@ -24,6 +17,36 @@
     ['3', '2', '1'],
     ['0']
   ];
+  var noticeForm = document.querySelector('.notice__form');
+  var noticeTitle = noticeForm.querySelector('[id = "title"]');
+  var noticeTimein = noticeForm.querySelector('[id = "timein"]');
+  var noticeTimeout = noticeForm.querySelector('[id = "timeout"]');
+  var noticeType = noticeForm.querySelector('[id = "type"]');
+  var noticeAddress = noticeForm.querySelector('[id = "address"]');
+  var noticePrice = noticeForm.querySelector('[id = "price"]');
+  var noticeRoomNumber = noticeForm.querySelector('[id = "room_number"]');
+  var noticeCapacity = noticeForm.querySelector('[id = "capacity"]');
+  var checkInput = noticeForm.querySelectorAll('input');
+  var formSubmit = noticeForm.querySelector('.form__submit');
+  var formReset = noticeForm.querySelector('.form__reset');
+  var noticeFieldset = noticeForm.querySelectorAll('fieldset');
+  var minValue = MIN_PRICE;
+
+  var noticeFormActivate = function () {
+    noticeForm.classList.remove('notice__form--disabled');
+    for (var i = 0; i < noticeFieldset.length; i++) {
+      noticeFieldset[i].disabled = false;
+    }
+  };
+
+  var getNoticeAddress = function (coordinateX, coordinateY) {
+    noticeAddress.value = 'x: ' + coordinateX + ', y: ' + coordinateY;
+  };
+
+  window.form = {
+    noticeFormActivate: noticeFormActivate,
+    getNoticeAddress: getNoticeAddress
+  };
 
   // функция изменения цвета рамки
   var setBorderColor = function (fieldObject, fieldColor) {
@@ -37,19 +60,18 @@
 
   // функция валидации поля title
   var noticeTitleEventHandler = function (evt) {
-    var targetValue = String(evt.target.value);
-    var targetValueTrim = targetValue.trim();
+    var targetValue = window.util.getString(evt.target.value);
     setBorderColor(evt.target, 'red');
-    if (targetValueTrim.length === 0) {
+    if (targetValue.length === 0) {
       evt.target.setCustomValidity('Обязательное поле');
-    } else if (targetValueTrim.length < MIN_LENGTH) {
+    } else if (targetValue.length < MIN_LENGTH) {
       evt.target.setCustomValidity('Количество символов поля должно быть не меньше ' + MIN_LENGTH);
-    } else if (targetValueTrim.length > MAX_LENGTH) {
+    } else if (targetValue.length > MAX_LENGTH) {
       evt.target.setCustomValidity('Количество символов поля должно быть не больше ' + MAX_LENGTH);
     } else {
       evt.target.setCustomValidity('');
       setBorderColor(evt.target, '');
-      evt.target.value = targetValueTrim;
+      evt.target.value = targetValue;
     }
   };
 
@@ -60,8 +82,8 @@
       evt.target.setCustomValidity('Значение поля должно быть числом');
     } else if (evt.target.value < minValue) {
       evt.target.setCustomValidity('Значение поля должно быть не меньше ' + minValue);
-    } else if (evt.target.value > window.vars.maxPrice) {
-      evt.target.setCustomValidity('Значение поля должно быть не больше ' + window.vars.maxPrice);
+    } else if (evt.target.value > MAX_PRICE) {
+      evt.target.setCustomValidity('Значение поля должно быть не больше ' + MAX_PRICE);
     } else {
       evt.target.setCustomValidity('');
       setBorderColor(evt.target, '');
@@ -70,15 +92,14 @@
 
   // функция валидации поля address
   var noticeAddressEventHandler = function (evt) {
-    var targetValue = String(evt.target.value);
-    var targetValueTrim = targetValue.trim();
+    var targetValue = window.util.getString(evt.target.value);
     setBorderColor(evt.target, 'red');
-    if (targetValueTrim.length === 0) {
+    if (targetValue.length === 0) {
       evt.target.setCustomValidity('Обязательное поле');
     } else {
       evt.target.setCustomValidity('');
       setBorderColor(evt.target, '');
-      evt.target.value = targetValueTrim;
+      evt.target.value = targetValue;
     }
   };
 
@@ -89,18 +110,18 @@
   noticePrice.addEventListener('blur', noticePriceEventHandler);
 
   // валидация Адреса внутри скрипта
-  window.vars.noticeAddress.addEventListener('blur', noticeAddressEventHandler);
+  noticeAddress.addEventListener('blur', noticeAddressEventHandler);
 
   // колл-бэк функция синхронизации значений 2-х элементов
-  var syncValues = function (element, value) {
+  var synchronizeValues = function (element, value) {
     element.value = value;
   };
   // вызов функции синхронизации времени заезда-выезда
-  window.synchronizeFields(noticeTimein, noticeTimeout, window.vars.offerCheckins, window.vars.offerCheckouts, syncValues);
-  window.synchronizeFields(noticeTimeout, noticeTimein, window.vars.offerCheckouts, window.vars.offerCheckins, syncValues);
+  window.synchronizeFields(noticeTimein, noticeTimeout, OFFER_CHECKINS, OFFER_CHECKOUTS, synchronizeValues);
+  window.synchronizeFields(noticeTimeout, noticeTimein, OFFER_CHECKOUTS, OFFER_CHECKINS, synchronizeValues);
 
   // колл-бэк функция синхронизации значения с min значением элемента
-  var syncValueWithMin = function (element, value) {
+  var synchronizeWithMinValue = function (element, value) {
     element.min = value;
     element.value = value;
     minValue = value;
@@ -108,22 +129,22 @@
   };
 
   // синхронизация типа жилья и минимальной цены
-  window.synchronizeFields(noticeType, noticePrice, OFFER_TYPES, OFFER_PRICES, syncValueWithMin);
+  window.synchronizeFields(noticeType, noticePrice, OFFER_TYPES, OFFER_PRICES, synchronizeWithMinValue);
 
-  // колл-бэк функция синхронизации массива со значением
-  var syncArrayWithValue = function (element, value) {
+  // колл-бэк функция синхронизации значения элемента с массивом
+  var synchronizeElementValueWithArray = function (element, array) {
     for (var i = 0; i < element.options.length; i++) {
       element.options[i].setAttribute('hidden', 'true');
-      for (var j = 0; j <= value.length; j++) {
-        if (element.options[i].value === value[j]) {
+      for (var j = 0; j <= array.length; j++) {
+        if (element.options[i].value === array[j]) {
           element.options[i].removeAttribute('hidden');
         }
       }
     }
-    element.value = value[0];
+    element.value = array[0];
   };
   // синхронизация количества гостей и комнат
-  window.synchronizeFields(noticeRoomNumber, noticeCapacity, ROOM_NUMBER, CAPACITY, syncArrayWithValue);
+  window.synchronizeFields(noticeRoomNumber, noticeCapacity, ROOM_NUMBER, CAPACITY, synchronizeElementValueWithArray);
 
   // инициализируем событие синхронизации гостей и комнат изначально
   window.util.callEvent(noticeRoomNumber, 'change');
@@ -131,15 +152,15 @@
   window.util.callEvent(noticeType, 'change');
 
   var resetNoticeForm = function () {
-    var noticeAddressDefautValue = window.vars.noticeAddress.value;
-    window.vars.noticeForm.reset();
-    window.vars.noticeAddress.value = noticeAddressDefautValue;
+    var noticeAddressDefautValue = noticeAddress.value;
+    noticeForm.reset();
+    noticeAddress.value = noticeAddressDefautValue;
     noticeCapacity.value = 1;
   };
 
-  window.vars.noticeForm.addEventListener('submit', function (evt) {
+  noticeForm.addEventListener('submit', function (evt) {
     window.backend.closeErrorHandler();
-    window.backend.save(new FormData(window.vars.noticeForm), resetNoticeForm, window.backend.openErrorHandler);
+    window.backend.save(new FormData(noticeForm), resetNoticeForm, window.backend.openErrorHandler);
     evt.preventDefault();
   });
 

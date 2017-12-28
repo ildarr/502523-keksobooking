@@ -3,31 +3,59 @@
 (function () {
   var WIDTH_IMAGE = 46;
   var HEIGHT_IMAGE = 62;
+  var PINS_AMOUNT = 5;
+  var DEBOUNCE_INTERVAL = 500;
   var fragment = document.createDocumentFragment();
 
-  var successHandler = function (array) {
+  var getDownloadsHandler = function (array) {
     window.vars.ads = array;
+    getMapPins(window.vars.ads);
+  };
+
+  var getMapPins = function (array) {
+    var takeNumber = array.length > PINS_AMOUNT ? PINS_AMOUNT : array.length;
     // добавляем метки на карту используя DocumentFragment
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < takeNumber; i++) {
       var mapPin = document.querySelector('template').content.querySelector('.map__pin').cloneNode(true);
-      mapPin.querySelector('img').src = window.vars.ads[i].author.avatar;
-      mapPin.style.left = window.vars.ads[i].location.x - WIDTH_IMAGE / 2 + 'px';
-      mapPin.style.top = window.vars.ads[i].location.y - HEIGHT_IMAGE + 'px';
+      mapPin.querySelector('img').src = array[i].author.avatar;
+      mapPin.style.left = array[i].location.x - WIDTH_IMAGE / 2 + 'px';
+      mapPin.style.top = array[i].location.y - HEIGHT_IMAGE + 'px';
       mapPin.dataset.mapPinId = i;
       mapPin.setAttribute('tabindex', '0');
       fragment.appendChild(mapPin);
       // готовим карточки объявлений
-      window.card.getMapCard(window.vars.ads[i], window.vars.map, i);
+      window.card.getMapCard(array[i], window.vars.map, i);
     }
   };
-  window.backend.setErrorHandler();
-  window.backend.load(successHandler, window.backend.openErrorHandler);
+
+  var deleteMapPins = function () {
+    var mapPinsCollection = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var mapCardCollection = document.querySelectorAll('.popup');
+
+    for (var i = 0; i < mapPinsCollection.length; i++) {
+      var currentPin = mapPinsCollection[i];
+      var currentCard = mapCardCollection[i];
+      window.vars.mapPins.removeChild(currentPin);
+      window.vars.map.removeChild(currentCard);
+    }
+  };
 
   var addFragment = function (element) {
     element.appendChild(fragment);
   };
 
+  window.backend.setErrorHandler();
+  window.backend.load(getDownloadsHandler, window.backend.openErrorHandler);
+
+  var updateMapPins = function (filteredArray) {
+    deleteMapPins();
+    window.debounce(getMapPins(filteredArray), DEBOUNCE_INTERVAL);
+    addFragment(window.vars.mapPins);
+    window.vars.targetPrevious = null;
+  };
+
   window.pin = {
-    addFragment: addFragment
+    addFragment: addFragment,
+    updateMapPins: updateMapPins
   };
 })();

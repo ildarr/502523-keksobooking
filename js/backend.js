@@ -2,6 +2,7 @@
 
 (function () {
   var SERVER_URL = 'https://1510.dump.academy/keksobooking';
+  var XHR_TIMEOUT = 10000;
 
   var setup = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
@@ -21,7 +22,7 @@
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = 10000;
+    xhr.timeout = XHR_TIMEOUT;
 
     return xhr;
   };
@@ -49,11 +50,21 @@
   var openErrorHandler = function (errorMessage) {
     errorPopup.style.visibility = 'visible';
     errorPopup.textContent = errorMessage;
+    window.vars.closeErrorIndicator = true;
+    document.addEventListener('keydown', buttonEscPressHandler);
+  };
+
+  var buttonEscPressHandler = function (evt) {
+    if (evt.keyCode === window.vars.ESC_KEYCODE) {
+      document.removeEventListener('keydown', buttonEscPressHandler);
+      window.backend.closeErrorHandler();
+    }
   };
 
   var closeErrorHandler = function () {
     errorPopup.style.visibility = 'hidden';
     errorPopup.textContent = '';
+    window.vars.closeErrorIndicator = false;
   };
 
   window.backend = {
