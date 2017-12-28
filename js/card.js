@@ -31,9 +31,9 @@
     document.addEventListener('keydown', buttonEscPressHandler);
   };
 
-  var buttonClickHandler = function () {
-    var indexNumber = this.parentNode.getAttribute('data-map-card-id');
-    this.removeEventListener('click', buttonClickHandler);
+  var buttonClickHandler = function (evt) {
+    var indexNumber = evt.tagret.parentNode.getAttribute('data-map-card-id');
+    evt.tagret.removeEventListener('click', buttonClickHandler);
     closeMapCard(indexNumber);
   };
 

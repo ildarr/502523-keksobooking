@@ -28,9 +28,9 @@
     var features = [].map.call(housingFeaturesCollection, function (elem) {
       if (element.includes(elem.value)) {
         sumIncludedValues += 1;
-      };
+      }
     });
-    return (sumIncludedValues === features.length) ? true: false;
+    return (sumIncludedValues === features.length) ? true : false;
   };
 
   var filterConditions = function (element) {
