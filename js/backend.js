@@ -3,13 +3,14 @@
 (function () {
   var SERVER_URL = 'https://1510.dump.academy/keksobooking';
   var XHR_TIMEOUT = 10000;
+  var XHR_STATUS = 200;
 
   var setup = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === XHR_STATUS) {
         onLoad(xhr.response);
       } else {
         onError(xhr.status + ': ' + xhr.statusText);

@@ -5,7 +5,7 @@
   var activateMap = function () {
     window.vars.map.classList.remove('map--faded');
     window.pin.addFragment(window.vars.mapPins);
-    window.form.noticeFormActivate();
+    window.form.activateNoticeForm();
   };
 
   window.map = {

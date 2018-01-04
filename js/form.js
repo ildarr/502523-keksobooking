@@ -26,17 +26,21 @@
   var noticePrice = noticeForm.querySelector('[id = "price"]');
   var noticeRoomNumber = noticeForm.querySelector('[id = "room_number"]');
   var noticeCapacity = noticeForm.querySelector('[id = "capacity"]');
-  var checkInput = noticeForm.querySelectorAll('input');
+  var checkInputCollection = noticeForm.querySelectorAll('input');
   var formSubmit = noticeForm.querySelector('.form__submit');
   var formReset = noticeForm.querySelector('.form__reset');
-  var noticeFieldset = noticeForm.querySelectorAll('fieldset');
+  var noticeFieldsetCollection = noticeForm.querySelectorAll('fieldset');
   var minValue = MIN_PRICE;
+  var inputAvatar = noticeForm.querySelector('.notice__photo input[type=file]');
+  var previewAvatarContainer = noticeForm.querySelector('.notice__preview');
+  var inputPhotos = noticeForm.querySelector('.form__photo-container input[type=file]');
+  var previewPhotosContainer = noticeForm.querySelector('.form__photo-container');
 
-  var noticeFormActivate = function () {
+  var activateNoticeForm = function () {
     noticeForm.classList.remove('notice__form--disabled');
-    for (var i = 0; i < noticeFieldset.length; i++) {
-      noticeFieldset[i].disabled = false;
-    }
+    [].forEach.call(noticeFieldsetCollection, function (noticeFieldset) {
+      noticeFieldset.disabled = false;
+    });
   };
 
   var getNoticeAddress = function (coordinateX, coordinateY) {
@@ -44,18 +48,14 @@
   };
 
   window.form = {
-    noticeFormActivate: noticeFormActivate,
+    activateNoticeForm: activateNoticeForm,
     getNoticeAddress: getNoticeAddress
   };
 
   // функция изменения цвета рамки
   var setBorderColor = function (fieldObject, fieldColor) {
     fieldObject.style.borderColor = fieldColor;
-    if (fieldColor === '') {
-      fieldObject.style.borderWidth = '';
-    } else {
-      fieldObject.style.borderWidth = '2px';
-    }
+    fieldObject.style.borderWidth = (fieldColor === '') ? '' : '2px';
   };
 
   // функция валидации поля title
@@ -132,19 +132,19 @@
   window.synchronizeFields(noticeType, noticePrice, OFFER_TYPES, OFFER_PRICES, synchronizeWithMinValue);
 
   // колл-бэк функция синхронизации значения элемента с массивом
-  var synchronizeElementValueWithArray = function (element, array) {
-    for (var i = 0; i < element.options.length; i++) {
-      element.options[i].setAttribute('hidden', 'true');
-      for (var j = 0; j <= array.length; j++) {
-        if (element.options[i].value === array[j]) {
-          element.options[i].removeAttribute('hidden');
+  var synchronizeElementWithFieldValues = function (element, fieldValues) {
+    [].forEach.call(element.options, function (elementOption) {
+      elementOption.setAttribute('hidden', 'true');
+      fieldValues.forEach(function (currentFieldValue) {
+        if (elementOption.value === currentFieldValue) {
+          elementOption.removeAttribute('hidden');
         }
-      }
-    }
-    element.value = array[0];
+      });
+    });
+    element.value = fieldValues[0];
   };
   // синхронизация количества гостей и комнат
-  window.synchronizeFields(noticeRoomNumber, noticeCapacity, ROOM_NUMBER, CAPACITY, synchronizeElementValueWithArray);
+  window.synchronizeFields(noticeRoomNumber, noticeCapacity, ROOM_NUMBER, CAPACITY, synchronizeElementWithFieldValues);
 
   // инициализируем событие синхронизации гостей и комнат изначально
   window.util.callEvent(noticeRoomNumber, 'change');
@@ -158,27 +158,42 @@
     noticeCapacity.value = 1;
   };
 
+  var getSumInvalidFields = function () {
+    var sumInvalidFields = 0;
+    [].forEach.call(checkInputCollection, function (currentCheckInput) {
+      CHECK_FIELDS.forEach(function (CHECK_FIELD) {
+        if (currentCheckInput.id === CHECK_FIELD) {
+          window.util.callEvent(currentCheckInput, 'blur');
+          if (currentCheckInput.style.borderColor === 'red') {
+            sumInvalidFields += 1;
+          }
+        }
+      });
+    });
+    return sumInvalidFields;
+  };
+
   noticeForm.addEventListener('submit', function (evt) {
-    window.backend.closeErrorHandler();
-    window.backend.save(new FormData(noticeForm), resetNoticeForm, window.backend.openErrorHandler);
+    if (getSumInvalidFields() === 0) {
+      window.backend.closeErrorHandler();
+      window.backend.save(new FormData(noticeForm), resetNoticeForm, window.backend.openErrorHandler);
+    }
     evt.preventDefault();
   });
 
-  formSubmit.addEventListener('click', function () {
-    // при отправке формы инициализируем проверку input для Заголовка, Прайса и Адреса
-    for (var i = 0; i < checkInput.length; i++) {
-      for (var j = 0; j < CHECK_FIELDS.length; j++) {
-        if (checkInput[i].id === CHECK_FIELDS[j]) {
-          window.util.callEvent(checkInput[i], 'blur');
-        }
-      }
-    }
+  noticeForm.addEventListener('reset', function () {
+    // при очистке формы сбрасываем состояния красных полей
+    [].forEach.call(checkInputCollection, function (currentCheckInput) {
+      setBorderColor(currentCheckInput, '');
+    });
+    window.photos.resetPhotosToUpload(previewAvatarContainer, previewPhotosContainer);
   });
 
-  formReset.addEventListener('click', function () {
-    // при очистке формы сбрасываем состояния красных полей
-    for (var i = 0; i < checkInput.length; i++) {
-      setBorderColor(checkInput[i], '');
-    }
-  });
+  // вызов функции загрузки аватара
+  window.photos.getPhotosToUpload(inputAvatar, previewAvatarContainer, false);
+  // вызов функции загрузки фотографий жилья
+  window.photos.getPhotosToUpload(inputPhotos, previewPhotosContainer, true);
+  // вызов функции сортировки фото
+  window.photos.sortPhotosToUpload(previewPhotosContainer);
+
 })();

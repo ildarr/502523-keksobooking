@@ -3,12 +3,12 @@
 (function () {
   window.synchronizeFields = function (primaryElement, dependentElement, primaryElementValues, dependentElementValues, synchronizeElementValues) {
     primaryElement.addEventListener('change', function (evt) {
-      for (var i = 0; i < primaryElementValues.length; i++) {
-        if (evt.target.value === primaryElementValues[i]) {
+      primaryElementValues.forEach(function (primaryElementValue, i) {
+        if (evt.target.value === primaryElementValue) {
           // запуск на исполнение callback функции
           synchronizeElementValues(dependentElement, dependentElementValues[i]);
         }
-      }
+      });
     });
   };
 })();
