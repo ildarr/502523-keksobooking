@@ -1,13 +1,13 @@
 'use strict';
 
 (function () {
-  var FILE_TYPES = ['gif', 'jpg' , 'jpeg', 'png'];
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var INITIAL_AVATAR_IMAGE = 'img/muffin.png';
 
   var getPhotosToUpload = function (fileChooser, previewContainer, fileMultiple) {
     fileChooser.multiple = fileMultiple;
-    fileChooser.addEventListener('change', function (evt) {
-      var files = evt.target.files;
+    var inputChangeHandler = function (currentEvt) {
+      var files = currentEvt.target.files;
       [].forEach.call(files, function (file) {
         var fileName = file.name.toLowerCase();
         var matches = FILE_TYPES.some(function (it) {
@@ -25,7 +25,8 @@
           reader.readAsDataURL(file);
         }
       });
-    });
+    };
+    fileChooser.addEventListener('change', inputChangeHandler);
   };
 
   var resetPhotosToUpload = function (resettingAvatarContainer, deletedPhotosContainer) {
@@ -34,7 +35,7 @@
     [].forEach.call(previewPhotosCollection, function (previewPhoto) {
       deletedPhotosContainer.removeChild(previewPhoto);
     });
-  }
+  };
 
   var sortPhotosToUpload = function (sortingPhotosContainer) {
 
@@ -80,5 +81,5 @@
     getPhotosToUpload: getPhotosToUpload,
     resetPhotosToUpload: resetPhotosToUpload,
     sortPhotosToUpload: sortPhotosToUpload
-  }
+  };
 })();

@@ -6,7 +6,7 @@
     var featureList = '';
     features.forEach(function (currentFeature) {
       featureList += '<li class="feature feature--' + currentFeature + '"></li>';
-    })
+    });
     return featureList;
   };
 

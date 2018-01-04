@@ -27,8 +27,6 @@
   var noticeRoomNumber = noticeForm.querySelector('[id = "room_number"]');
   var noticeCapacity = noticeForm.querySelector('[id = "capacity"]');
   var checkInputCollection = noticeForm.querySelectorAll('input');
-  var formSubmit = noticeForm.querySelector('.form__submit');
-  var formReset = noticeForm.querySelector('.form__reset');
   var noticeFieldsetCollection = noticeForm.querySelectorAll('fieldset');
   var minValue = MIN_PRICE;
   var inputAvatar = noticeForm.querySelector('.notice__photo input[type=file]');
