@@ -62,7 +62,7 @@
     sortingPhotosContainer.addEventListener('drop', function (evt) {
       evt.target.style.backgroundColor = '';
       var replaced = sortingPhotosContainer.replaceChild(draggedItem, dragoverItem);
-      sortingPhotosContainer.insertBefore(replaced, nextItem);
+      sortingPhotosContainer.insertBefore(replaced, (replaced === nextItem) ? draggedItem : nextItem);
       evt.preventDefault();
     });
 
