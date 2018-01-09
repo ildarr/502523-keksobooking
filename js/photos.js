@@ -16,7 +16,7 @@
         if (matches) {
           var reader = new FileReader();
           reader.addEventListener('load', function (evt) {
-            if (fileMultiple === true) {
+            if (fileMultiple) {
               previewContainer.insertAdjacentHTML('beforeend', '<img src="' + evt.target.result + '" width="45" height="45" title="' + fileName + '">');
             } else {
               previewContainer.querySelector('img').src = evt.target.result;
