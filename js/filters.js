@@ -8,7 +8,7 @@
   var housingGuests = mapFilters.querySelector('[id = "housing-guests"]');
   var housingFeatures = mapFilters.querySelector('[id = "housing-features"]');
 
-  var priceCondition = function (element) {
+  var getPriceCondition = function (element) {
     switch (housingPrice.value) {
       case 'low':
         return element.offer.price < 10000;
@@ -21,33 +21,28 @@
   };
 
   // условие фильтра для features
-  var featuresFilter = function (element) {
+  var getFeaturesFilter = function (element) {
     var housingFeaturesCollection = housingFeatures.querySelectorAll('input[type="checkbox"]:checked');
     var sumIncludedValues = 0;
     // преобразуем коллекцию в массив и подсчитываем количество включений отмеченных features
-    var features = [].map.call(housingFeaturesCollection, function (elem) {
-      if (element.includes(elem.value)) {
+    var features = [].map.call(housingFeaturesCollection, function (currentFeature) {
+      if (element.includes(currentFeature.value)) {
         sumIncludedValues += 1;
       }
     });
     return sumIncludedValues === features.length;
   };
 
-  var filterConditions = function (element) {
+  var getFilterConditions = function (element) {
     return ((housingType.value === 'any') ? true : (element.offer.type === housingType.value))
-    && ((housingPrice.value === 'any') ? true : priceCondition(element))
+    && ((housingPrice.value === 'any') ? true : getPriceCondition(element))
     && ((housingRooms.value === 'any') ? true : (element.offer.rooms === parseInt(housingRooms.value, 10)))
     && ((housingGuests.value === 'any') ? true : (element.offer.guests === parseInt(housingGuests.value, 10)))
-    && featuresFilter(element.offer.features);
+    && getFeaturesFilter(element.offer.features);
   };
 
   mapFilters.addEventListener('change', function () {
-    var filteredAds = window.vars.ads.filter(filterConditions);
+    var filteredAds = window.vars.ads.filter(getFilterConditions);
     window.pin.updateMapPins(filteredAds);
   });
-
-  window.filters = {
-    filterConditions: filterConditions
-  };
-
 })();

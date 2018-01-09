@@ -4,9 +4,9 @@
   // функция получения списка доступных удобств
   var getFeatures = function (features) {
     var featureList = '';
-    for (var i = 0; i < features.length; i++) {
-      featureList += '<li class="feature feature--' + features[i] + '"></li>';
-    }
+    features.forEach(function (currentFeature) {
+      featureList += '<li class="feature feature--' + currentFeature + '"></li>';
+    });
     return featureList;
   };
 
@@ -33,7 +33,8 @@
   // функция преобразования в строку и удаления внешних пробелов
   var getString = function (objectValue) {
     if (typeof objectValue !== 'string') {
-      return String(objectValue.trim());
+      var stringObjectValue = String(objectValue);
+      return stringObjectValue.trim();
     } else {
       return objectValue.trim();
     }
